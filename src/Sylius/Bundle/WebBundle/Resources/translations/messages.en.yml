@@ -149,6 +149,8 @@ sylius:
         generate: Generate
         group:
             index: Groups
+        import_profile:
+            index: Import Profile
         inventory:
             index: Inventory
         export_job:
@@ -394,6 +396,24 @@ sylius:
         splash:
             headline: Welcome to Sylius
             subheadline: Modern ecommerce for Symfony2
+    import_profile:
+        code: Code
+        create: Create profile
+        create_header: New import profile
+        description: Description
+        enabled: Enabled
+        general_info: General info
+        id: ID
+        index_header: Import Profiles
+        manage: Manage
+        name: Name
+        no_results: There are no profiles to display.
+        reader: Reader
+        reader_configuration: Reader configuration
+        update_header: Editing profile
+        updated_at: Last update
+        writer: Writer
+        writer_configuration: Writer configuration
     inventory_unit:
         created_at: Created
         inventory_state: Inventory state

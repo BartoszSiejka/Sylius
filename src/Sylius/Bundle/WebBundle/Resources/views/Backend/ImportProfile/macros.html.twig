@@ -12,8 +12,8 @@
             <th>{{ sylius_resource_sort('name', 'sylius.import_profile.name'|trans) }}</th>
             <th>{{ sylius_resource_sort('description', 'sylius.import_profile.description'|trans) }}</th>
             <th>{{ sylius_resource_sort('code', 'sylius.import_profile.code'|trans) }}</th>
-            <th>{{ sylius_resource_sort('importer', 'sylius.import_profile.importer'|trans) }}</th>
-            <th>{{ sylius_resource_sort('importerConfiguration', 'sylius.import_profile.importerConfiguration'|trans) }}</th>
+            <th>{{ sylius_resource_sort('reader', 'sylius.import_profile.reader'|trans) }}</th>
+            <th>{{ sylius_resource_sort('writer', 'sylius.import_profile.writer'|trans) }}</th>
             <th></th>
         </tr>
     </thead>
@@ -24,8 +24,8 @@
             <td>{{ import_profile.name }}</td>
             <td>{{ import_profile.description }}</td>
             <td>{{ import_profile.code }}</td>
-            <td>{{ import_profile.importer }}</td>
-            <td>{{ import_profile.importerConfiguration }}</td>
+            <td>{{ import_profile.reader }}</td>
+            <td>{{ import_profile.writer }}</td>
             <td>
                 <div class="pull-right">
                 {{ buttons.show(path('sylius_backend_import_profile_show', {'id': import_profile.id})) }}

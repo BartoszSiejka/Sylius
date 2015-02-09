@@ -11,7 +11,7 @@
 
 namespace Sylius\Bundle\ImportExportBundle\Form\EventListener;
 
-use Sylius\Component\ImportExport\Model\ExportProfileInterface;
+use Sylius\Component\ImportExport\Model\ProfileInterface;
 use Sylius\Component\Registry\ServiceRegistryInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -54,17 +54,17 @@ class BuildReaderFormListener implements EventSubscriberInterface
 
     public function preSetData(FormEvent $event)
     {
-        $exportProfiler = $event->getData();
+        $profiler = $event->getData();
 
-        if (null === $exportProfiler) {
+        if (null === $profiler) {
             return;
         }
 
-        if (!$exportProfiler instanceof ExportProfileInterface) {
-            throw new UnexpectedTypeException($exportProfiler, 'Sylius\Component\ImportExport\Model\ExportProfileInterface');
+        if (!$profiler instanceof ProfileInterface) {
+            throw new UnexpectedTypeException($profiler, 'Sylius\Component\ImportExport\Model\ProfileInterface');
         }
 
-        $this->addConfigurationFields($event->getForm(), $exportProfiler->getReader(), $exportProfiler->getReaderConfiguration());
+        $this->addConfigurationFields($event->getForm(), $profiler->getReader(), $profiler->getReaderConfiguration());
     }
 
     public function preBind(FormEvent $event)
@@ -78,10 +78,10 @@ class BuildReaderFormListener implements EventSubscriberInterface
         $this->addConfigurationFields($event->getForm(), $data['reader']);
     }
 
-    protected function addConfigurationFields(FormInterface $form, $exporterType, array $configuration = array())
+    protected function addConfigurationFields(FormInterface $form, $readerType, array $configuration = array())
     {
-        $exporter = $this->readerRegistry->get($exporterType);
-        $formType = sprintf('sylius_%s_reader', $exporter->getType());
+        $reader = $this->readerRegistry->get($readerType);
+        $formType = sprintf('sylius_%s_reader', $reader->getType());
         try {
             $configurationField = $this->factory->createNamed(
                 'readerConfiguration', 

@@ -16,6 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
 class ExportReaderChoiceTypeSpec extends ObjectBehavior
 {
@@ -44,6 +45,6 @@ class ExportReaderChoiceTypeSpec extends ObjectBehavior
 
     function it_has_name()
     {
-        $this->getName()->shouldReturn('sylius_reader_choice');
+        $this->getName()->shouldReturn('sylius_export_reader_choice');
     }
 }

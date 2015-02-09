@@ -43,7 +43,7 @@ class ProductReader extends AbstractDoctrineReader
         return 'product';
     }
     
-    protected function process($product)
+    public function process($product)
     {        
         $archetype = $product->getArchetype();
         $taxCategory = $product->getTaxCategory();

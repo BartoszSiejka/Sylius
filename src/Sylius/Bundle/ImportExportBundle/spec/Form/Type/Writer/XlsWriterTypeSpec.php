@@ -18,24 +18,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class CsvWriterTypeSpec extends ObjectBehavior
+class XlsWriterTypeSpec extends ObjectBehavior
 {
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Bundle\ImportExportBundle\Form\Type\Reader\CsvWriterType');
+        $this->shouldHaveType('Sylius\Bundle\ImportExportBundle\Form\Type\Reader\XlsWriterType');
     }
 
     function it_builds_form_with_proper_fields(FormBuilderInterface $builder)
     {
-        $builder
-            ->add('delimiter', 'text', Argument::type('array'))
-            ->willReturn($builder)
-        ;
-        $builder
-            ->add('enclosure', 'text', Argument::type('array'))
-            ->willReturn($builder)
-        ;
         $builder
             ->add('add_header', 'checkbox', Argument::type('array'))
             ->willReturn($builder)
@@ -49,6 +41,6 @@ class CsvWriterTypeSpec extends ObjectBehavior
 
     function it_has_name()
     {
-        $this->getName()->shouldReturn('sylius_csv_writer');
+        $this->getName()->shouldReturn('sylius_xls_writer');
     }
 }

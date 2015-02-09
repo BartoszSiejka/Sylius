@@ -11,7 +11,7 @@
 
 namespace Sylius\Component\ImportExport;
 
-use Sylius\Component\ImportExport\Model\ImportProfile;
+use Sylius\Component\ImportExport\Model\ImportProfileInterface;
 use Sylius\Component\Registry\ServiceRegistryInterface;
 
 /**
@@ -39,23 +39,32 @@ class Importer implements ImporterInterface
      * @var ServiceRegistryInterface $readerRegistry
      * @var ServiceRegistryInterface $writerRegistry
      */
-    public function __construct(ServiceRegistryInterface $readerRegistry
-        // , ServiceRegistryInterface $writerRegistry
-        )
+    public function __construct(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry)
     {
         $this->readerRegistry = $readerRegistry;
-        // $this->writerRegistry = $writerRegistry;
+        $this->writerRegistry = $writerRegistry;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function import(ImportProfile $importProfile)
+    public function import(ImportProfileInterface $importProfile)
     {
-        if (null === $type = $importProfile->getImporter()) {
-            throw new \InvalidArgumentException('Cannot import data with ImportProfile instance without importer defined.');
+        if (null === $readerType = $importProfile->getReader()) {
+            throw new \InvalidArgumentException('Cannot read data with ImportProfile instance without reader defined.');
         }
-        $importer = $this->readerRegistry->get($type);
-        return $importer->import($importProfile->getEntity(), $importProfile->getFields(), $importProfile->getImporterConfiguration());
+        if (null === $writerType = $importProfile->getWriter()) {
+            throw new \InvalidArgumentException('Cannot write data with ImportProfile instance without writer defined.');
+        }
+
+        $reader = $this->readerRegistry->get($readerType);
+        $reader->setConfiguration($importProfile->getReaderConfiguration());
+
+        $writer = $this->writerRegistry->get($writerType);
+        $writer->setConfiguration($importProfile->getWriterConfiguration());
+
+        while (null !== ($readedLine = $reader->read())) {
+            $writer->write($readedLine);
+        }
     }
 }

@@ -14,14 +14,14 @@ namespace Sylius\Component\ImportExport\Model;
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class ImportProfile extends Profile implements ExportProfileInterface
+class ImportProfile extends Profile implements ImportProfileInterface
 {
     function __construct() 
     {
-        $this->writer = '';
-        $this->writerConfiguration = array();
-        $this->reader = '';
+        $this->reader = 'csv_reader';
         $this->readerConfiguration = array();
+        $this->writer = 'product_writer';
+        $this->writerConfiguration = array();
     }
 
     /**

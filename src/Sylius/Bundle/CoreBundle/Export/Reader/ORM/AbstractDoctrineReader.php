@@ -55,5 +55,5 @@ abstract class AbstractDoctrineReader implements ReaderInterface
         $this->configuration = $configuration;
     }  
 
-    protected abstract function process($result);
+    public abstract function process($result);
 }

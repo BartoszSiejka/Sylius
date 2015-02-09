@@ -15,32 +15,33 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Sylius\Component\ImportExport\Reader\CsvReader;
+use Sylius\Component\ImportExport\Writer\CsvWriter;
 
 /**
 * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
 */
-class ImportDataCommand extends ContainerAwareCommand
+class ImportCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
             ->setName('sylius:import')
-            ->setDescription('Command for importing data based on given data.')
+            ->setDescription('Command for exporting data based on export profile.')
             ->addArgument(
-                'file',
+                'code',
                 InputArgument::REQUIRED,
-                'Path to file that will be imported.'
+                'Code of import profile, which data will be imported.'
             )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filePath = $input->getArgument('file');
-        
-        $reader = new CsvReader();
-        $reader->setConfiguration(array('file' => $filePath, 'delimiter' => ';', 'enclosure' => '*', 'headers' => false));
-        $output->writeln(serialize($reader->read()));
+        $importProfile = $this->getContainer()->get('sylius.repository.import_profile')->findOneByCode($input->getArgument('code'));
+        if ($importProfile === null) {
+            throw new \InvalidArgumentException('There is no import profile with given code.');
+        }
+
+        $this->getContainer()->get('sylius.import_export.importer')->import($importProfile);
     }
 }

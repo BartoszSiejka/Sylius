@@ -54,6 +54,6 @@ class ExportReaderChoiceType extends AbstractType
 
     public function getName()
     {
-        return 'sylius_reader_choice';
+        return 'sylius_export_reader_choice';
     }
 }

@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityManager;
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
-class ExcelWriter implements WriterInterface
+class XlsWriter implements WriterInterface
 {
     /**
      * @var array
@@ -41,6 +41,6 @@ class ExcelWriter implements WriterInterface
      */
     public function getType()
     {
-        return 'excel';
+        return 'xls';
     }
 }

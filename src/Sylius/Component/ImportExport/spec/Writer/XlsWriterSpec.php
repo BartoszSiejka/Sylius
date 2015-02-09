@@ -16,11 +16,11 @@ use PhpSpec\ObjectBehavior;
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
-class ExcelWriterSpec extends ObjectBehavior
+class XlsWriterSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Component\ImportExport\Writer\ExcelWriter');
+        $this->shouldHaveType('Sylius\Component\ImportExport\Writer\XlsWriter');
     }
 
     function it_implements_exporter_interface()
@@ -30,6 +30,6 @@ class ExcelWriterSpec extends ObjectBehavior
 
     function it_has_type()
     {
-        $this->getType()->shouldReturn('excel');
+        $this->getType()->shouldReturn('xls');
     }
 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace spec\Sylius\Bundle\ImportExportBundle\Form\Type\Writer;
+namespace spec\Sylius\Bundle\ImportExportBundle\Form\Type\Reader;
 
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -18,22 +18,22 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class ExportWriterChoiceTypeSpec extends ObjectBehavior
+class ImportReaderChoiceTypeSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith(array('testWriter' => 'TestWriter'));
+        $this->beConstructedWith(array('testReader' => 'TestReader'));
     }
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Bundle\ImportExportBundle\Form\Type\Writer\ExportWriterChoiceType');
+        $this->shouldHaveType('Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ImportReaderChoiceType');
     }
 
     function it_sets_default_options(OptionsResolverInterface $resolver)
     {
-        $writers = array('testWriter' => 'TestWriter');
-        $resolver->setDefaults(array('choices' => $writers))->shouldBeCalled();
+        $readers = array('testReader' => 'TestReader');
+        $resolver->setDefaults(array('choices' => $readers))->shouldBeCalled();
 
         $this->setDefaultOptions($resolver);
     }
@@ -45,6 +45,6 @@ class ExportWriterChoiceTypeSpec extends ObjectBehavior
 
     function it_has_name()
     {
-        $this->getName()->shouldReturn('sylius_export_writer_choice');
+        $this->getName()->shouldReturn('sylius_import_reader_choice');
     }
 }

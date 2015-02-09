@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  * @author Bartosz Siejka <bartosz.siejka@lakion.com>
  */
-class ExportWriterChoiceType extends AbstractType
+class ImportWriterChoiceType extends AbstractType
 {
     /**
      * Writers
@@ -55,6 +55,6 @@ class ExportWriterChoiceType extends AbstractType
 
     public function getName()
     {
-        return 'sylius_export_writer_choice';
+        return 'sylius_import_writer_choice';
     }
 }

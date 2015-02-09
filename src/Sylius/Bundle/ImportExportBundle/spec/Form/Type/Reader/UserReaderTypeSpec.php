@@ -18,37 +18,24 @@ use Symfony\Component\Form\FormBuilderInterface;
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class CsvWriterTypeSpec extends ObjectBehavior
+class UserReaderTypeSpec extends ObjectBehavior
 {
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Bundle\ImportExportBundle\Form\Type\Reader\CsvWriterType');
+        $this->shouldHaveType('Sylius\Bundle\ImportExportBundle\Form\Type\Reader\UserReaderType');
     }
 
     function it_builds_form_with_proper_fields(FormBuilderInterface $builder)
     {
         $builder
-            ->add('delimiter', 'text', Argument::type('array'))
+            ->add('batch_size', 'number', Argument::type('array'))
             ->willReturn($builder)
         ;
-        $builder
-            ->add('enclosure', 'text', Argument::type('array'))
-            ->willReturn($builder)
-        ;
-        $builder
-            ->add('add_header', 'checkbox', Argument::type('array'))
-            ->willReturn($builder)
-        ;
-        $builder
-            ->add('file', 'text', Argument::type('array'))
-            ->willReturn($builder)
-        ;
-        $this->buildForm($builder, array());
     }
 
     function it_has_name()
     {
-        $this->getName()->shouldReturn('sylius_csv_writer');
+        $this->getName()->shouldReturn('sylius_user_reader');
     }
 }

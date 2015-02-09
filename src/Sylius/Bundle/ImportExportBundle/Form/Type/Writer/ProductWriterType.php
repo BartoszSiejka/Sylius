@@ -15,11 +15,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Excel writer type
+ * Xls writer type
  *
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
-class ExcelWriterType extends AbstractType
+class ProductWriterType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -27,13 +27,9 @@ class ExcelWriterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('add_header', 'checkbox', array(
-                'label'    => 'sylius.form.writer.csv.add_header',
+            ->add('update', 'checkbox', array(
+                'label'    => 'sylius.form.writer.update',
                 'required' => false,
-            ))
-            ->add('file', 'text', array(
-                'label'    => 'sylius.form.writer.file',
-                'required' => true,
             ))
         ;
     }
@@ -43,6 +39,6 @@ class ExcelWriterType extends AbstractType
      */
     public function getName()
     {
-        return 'sylius_excel_writer';
+        return 'sylius_product_writer';
     }
 }

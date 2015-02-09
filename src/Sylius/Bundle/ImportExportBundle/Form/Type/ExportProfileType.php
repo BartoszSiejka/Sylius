@@ -76,17 +76,17 @@ class ExportProfileType extends AbstractResourceType
                 'label'    => 'sylius.form.export_profile.description',
                 'required' => false,
             ))
-            ->add('reader', 'sylius_reader_choice', array(
+            ->add('reader', 'sylius_export_reader_choice', array(
                 'label'    => 'sylius.form.reader.name'
             ))
-            ->add('writer', 'sylius_writer_choice', array(
+            ->add('writer', 'sylius_export_writer_choice', array(
                 'label' => 'sylius.form.writer.name'
             ))
         ;
 
         $prototypes = array(
-            'reader' => array(),
-            'writer' => array(),
+            'readers' => array(),
+            'writers' => array(),
         );
 
         foreach ($this->readerRegistry->all() as $type => $reader) {
@@ -97,7 +97,7 @@ class ExportProfileType extends AbstractResourceType
             }
 
             try {
-                $prototypes['reader'][$type] = $builder->create('readerConfiguration', $formType)->getForm();
+                $prototypes['readers'][$type] = $builder->create('readerConfiguration', $formType)->getForm();
             } catch (\InvalidArgumentException $e) {
                 continue;
             }
@@ -111,7 +111,7 @@ class ExportProfileType extends AbstractResourceType
             }
 
             try {
-                $prototypes['writer'][$type] = $builder->create('writerConfiguration', $formType)->getForm();
+                $prototypes['writers'][$type] = $builder->create('writerConfiguration', $formType)->getForm();
             } catch (\InvalidArgumentException $e) {
                 continue;
             }

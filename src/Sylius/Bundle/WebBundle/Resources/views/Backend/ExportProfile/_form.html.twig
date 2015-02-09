@@ -10,7 +10,7 @@
         <hr>
         <div class="col-md-6">
             {{ form_row(form.reader) }}
-            {% for name, readerConfigurationPrototype in form.vars.prototypes.reader %}
+            {% for name, readerConfigurationPrototype in form.vars.prototypes.readers %}
                 <div id="{{ form.reader.vars.id }}_{{ name }}" data-container="#reader.configuration" data-prototype="{{ form_widget(readerConfigurationPrototype)|e }}">
                 </div>
             {% endfor %}
@@ -24,7 +24,7 @@
         </div>
         <div class="col-md-6">
             {{ form_row(form.writer) }}
-            {% for name, writerConfigurationPrototype in form.vars.prototypes.writer %}
+            {% for name, writerConfigurationPrototype in form.vars.prototypes.writers %}
                 <div id="{{ form.writer.vars.id }}_{{ name }}" data-container="#writer.configuration" data-prototype="{{ form_widget(writerConfigurationPrototype)|e }}">
                 </div>
             {% endfor %}

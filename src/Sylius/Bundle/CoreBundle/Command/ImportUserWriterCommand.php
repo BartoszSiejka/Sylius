@@ -9,39 +9,42 @@
  * file that was distributed with this source code.
  */
 
-namespace Sylius\Bundle\ImportExportBundle\Command;
+namespace Sylius\Bundle\CoreBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Sylius\Component\ImportExport\Writer\CsvWriter;
 
 /**
-* @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
+* @author Bartosz Siejka <bartosz.siejka@lakion.com>
 */
-class ExportDataCommand extends ContainerAwareCommand
+class ImportUserWriterCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('sylius:export')
-            ->setDescription('Command for exporting data based on export profile.')
+            ->setName('sylius:import:writer:user')
+            ->setDescription('Test command for import writer class.')
             ->addArgument(
                 'code',
                 InputArgument::REQUIRED,
-                'Code of export profile, which data will be saved.'
+                'Code of import profile, which data will be imported.'
             )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $exportProfile = $this->getContainer()->get('sylius.repository.export_profile')->findByCode($input->getArgument('code'));
-        if ($exportProfile === null) {
+        $importProfile = $this->getContainer()->get('sylius.repository.import_profile')->findOneByCode($input->getArgument('code'));
+        $userWriter = $this->getContainer()->get('sylius.repository.user');
+        
+        if ($importProfile === null) {
             throw new \InvalidArgumentException('There is no export profile with given code.');
         }
 
-        $this->getContainer()->get('sylius.import_export.exporter')->export($exportProfile[0]);
+        $this->getContainer()->get('sylius.import_export.importer')->import($importProfile);
+        
+        $userWriter->write();
     }
 }
