@@ -37,15 +37,27 @@ class CsvWriter implements WriterInterface
     private $configuration;
 
     /**
+     * @var boolean
+     */
+    private $isHeaderSet = false;
+
+    /**
      * @param array $items
      */
     public function write(array $items)
     {
+
         if (!$this->running) {
             $this->csvWriter = new Writer($this->configuration['file'], 'w');
             $this->csvWriter->setDelimiter($this->configuration['delimiter']);
             $this->csvWriter->setEnclosure($this->configuration['enclosure']);
             $this->running = true;
+        }
+
+        if (!$this->isHeaderSet) {
+            $header = array_keys($items);
+            $this->csvWriter->writeRow($header);
+            $this->isHeaderSet = true;
         }
 
         $this->csvWriter->writeRow($items);
