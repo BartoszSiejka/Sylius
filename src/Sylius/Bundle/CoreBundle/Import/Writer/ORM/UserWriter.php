@@ -22,40 +22,99 @@ use Doctrine\ORM\EntityManager;
 class UserWriter extends AbstractDoctrineWriter
 {
     private $userRepository;
+    private $addressRepository;
+    private $countryRepository;
+    private $provinceRepository;
     
-    public function __construct(RepositoryInterface $userRepository, EntityManager $em)
+    public function __construct(RepositoryInterface $userRepository, EntityManager $em, RepositoryInterface $addressRepository, RepositoryInterface $countryRepository, RepositoryInterface $provinceRepository)
     {
         parent::__construct($em);
         $this->userRepository = $userRepository;
+        $this->addressRepository = $addressRepository;
+        $this->countryRepository = $countryRepository;
+        $this->provinceRepository = $provinceRepository;
     }
     
     public function process($data) 
     {
-        $user = $this->userRepository->createNew();
-        $shippingAddress = $user->getShippingAddress();
-        $billingAddress = $user->getBillingAddress();
+        $userRepository = $this->userRepository;
         
-        $user->setFirstName($data['1']);
-        $user->setLastName($data['2']);
-        $user->setUsername($data['3']);
-        $user->setEmail($data['4']);
-        $shippingAddress ? $shippingAddress->setCompany($data['5']) : null;
-        $shippingAddress ? $shippingAddress->setCountry($data['6']) : null;
-        $shippingAddress ? $shippingAddress->setProvince($data['7']) : null;
-        $shippingAddress ? $shippingAddress->setCity($data['8']) : null;
-        $shippingAddress ? $shippingAddress->setStreet($data['9']) : null;
-        $shippingAddress ? $shippingAddress->setPostcode($data['10']) : null;
-        $shippingAddress ? $shippingAddress->setPhoneNumber($data['11']) : null;
-        $billingAddress ? $billingAddress->setCompany($data['12']) : null;
-        $billingAddress ? $billingAddress->setCountry($data['13']) : null;
-        $billingAddress ? $billingAddress->setProvince($data['14']) : null;
-        $billingAddress ? $billingAddress->setCity($data['15']) : null;
-        $billingAddress ? $billingAddress->setStreet($data['16']) : null;
-        $billingAddress ? $billingAddress->setPostcode($data['17']) : null;
-        $billingAddress ? $billingAddress->setPhoneNumber($data['18']) : null;
-        $user->setEnabled($data['19']);
-        $user->setCurrency($data['20']);
-        $user->setCreatedAt(new \DateTime($data['21']));
+        if($userRepository->findOneBy(array('email' => $data['email']))){
+            $user = $userRepository->findOneByEmail($data['email']);
+            $shippingAddress = $user->getShippingAddress();
+            $billingAddress = $user->getBillingAddress();
+            
+            $data['shipping_address_country'] ? $shippingCountry = $this->countryRepository->findOneByIsoName($data['shipping_address_country']) : $shippingCountry = $shippingAddress->getCountry();
+            $data['shipping_address_province'] ? $shippingProvince = $this->provinceRepository->findOneByIsoName($data['shipping_address_province']) : $shippingProvince = $shippingAddress->getProvince();
+            $data['billing_address_country'] ? $billingCountry = $this->countryRepository->findOneByIsoName($data['billing_address_country']) : $billingCountry = $billingAddress->getCountry();
+            $data['billing_address_province'] ? $billingProvince = $this->provinceRepository->findOneByIsoName($data['billing_address_province']) : $billingProvince = $billingAddress->getProvince();
+
+            $data['first_name'] ? $user->setFirstName($data['first_name']) : $user->getFirstName();
+            $data['last_name'] ? $user->setLastName($data['last_name']) : $user->getLastName();
+            $data['email'] ? $user->setEmail($data['email']) : $user->getEmail();
+            $data['shipping_address_company'] ? $shippingAddress->setCompany($data['shipping_address_company']) : $shippingAddress->getCompany();
+            $data['first_name'] ? $shippingAddress->setFirstName($data['first_name']) : $shippingAddress->getFirstName();
+            $data['last_name'] ? $shippingAddress->setLastName($data['last_name']) : $shippingAddress->getLastName();
+            $shippingAddress->setCountry($shippingCountry);
+            $shippingAddress->setProvince($shippingProvince);
+            $data['shipping_address_city'] ? $shippingAddress->setCity($data['shipping_address_city']) : $shippingAddress->getCity();
+            $data['shipping_address_street'] ? $shippingAddress->setStreet($data['shipping_address_street']) : $shippingAddress->getStreet();
+            $data['shipping_address_postcode'] ? $shippingAddress->setPostcode($data['shipping_address_postcode']) : $shippingAddress->getPostcode();
+            $data['shipping_address_phone_number'] ? $shippingAddress->setPhoneNumber($data['shipping_address_phone_number']) : $shippingAddress->getPhoneNumber();
+            $user->setShippingAddress($shippingAddress);
+            $data['billing_address_company'] ? $billingAddress->setCompany($data['billing_address_company']) : $billingAddress->getCompany();
+            $data['first_name'] ? $billingAddress->setFirstName($data['first_name']) : $billingAddress->getFirstName();
+            $data['last_name'] ? $billingAddress->setLastName($data['last_name']) : $billingAddress->getLastName();
+            $billingAddress->setCountry($billingCountry);
+            $billingAddress->setProvince($billingProvince);
+            $data['billing_address_city'] ? $billingAddress->setCity($data['billing_address_city']) : $billingAddress->getCity();
+            $data['billing_address_street'] ? $billingAddress->setStreet($data['billing_address_street']) : $billingAddress->getStreet();
+            $data['billing_address_postcode'] ? $billingAddress->setPostcode($data['billing_address_postcode']) : $billingAddress->getPostcode();
+            $data['billing_address_phone_number'] ? $billingAddress->setPhoneNumber($data['billing_address_phone_number']) : $billingAddress->getPhoneNumber();
+            $user->setBillingAddress($billingAddress);
+            $user->setEnabled($data['enabled']);
+            $data['currency'] ? $user->setCurrency($data['currency']) : $user->getCurrency();
+            $user->setPlainPassword($data['password']);
+            $user->setUpdatedAt(new \DateTime());
+
+            return $user;
+        }
+        
+        $user = $userRepository->createNew();
+        $shippingAddress = $this->addressRepository->createNew();
+        $billingAddress = $this->addressRepository->createNew();
+        $data['shipping_address_country'] ? $shippingCountry = $this->countryRepository->findOneByIsoName($data['shipping_address_country']) : $shippingCountry = null;
+        $data['shipping_address_province'] ? $shippingProvince = $this->provinceRepository->findOneByIsoName($data['shipping_address_province']) : $shippingProvince = null;
+        $data['billing_address_country'] ? $billingCountry = $this->countryRepository->findOneByIsoName($data['billing_address_country']) : $billingCountry = null;
+        $data['billing_address_province'] ? $billingProvince = $this->provinceRepository->findOneByIsoName($data['billing_address_province']) : $billingProvince = null;
+        
+        $user->setFirstName($data['first_name']);
+        $user->setLastName($data['last_name']);
+        $user->setEmail($data['email']);
+        $data['shipping_address_company'] ? $shippingAddress->setCompany($data['shipping_address_company']) : null;
+        $shippingAddress->setFirstName($data['first_name']);
+        $shippingAddress->setLastName($data['last_name']);
+        $shippingAddress->setCountry($shippingCountry);
+        $shippingAddress->setProvince($shippingProvince);
+        $data['shipping_address_city'] ? $shippingAddress->setCity($data['shipping_address_city']) : null;
+        $data['shipping_address_street'] ? $shippingAddress->setStreet($data['shipping_address_street']) : null;
+        $data['shipping_address_postcode'] ? $shippingAddress->setPostcode($data['shipping_address_postcode']) : null;
+        $data['shipping_address_phone_number'] ? $shippingAddress->setPhoneNumber($data['shipping_address_phone_number']) : null;
+        $user->setShippingAddress($shippingAddress);
+        $data['billing_address_company'] ? $billingAddress->setCompany($data['billing_address_company']) : null;
+        $billingAddress->setFirstName($data['first_name']);
+        $billingAddress->setLastName($data['last_name']);
+        $billingAddress->setCountry($billingCountry);
+        $billingAddress->setProvince($billingProvince);
+        $data['billing_address_city'] ? $billingAddress->setCity($data['billing_address_city']) : null;
+        $data['billing_address_street'] ? $billingAddress->setStreet($data['billing_address_street']) : null;
+        $data['billing_address_postcode'] ? $billingAddress->setPostcode($data['billing_address_postcode']) : null;
+        $data['billing_address_phone_number'] ? $billingAddress->setPhoneNumber($data['billing_address_phone_number']) : null;
+        $user->setBillingAddress($billingAddress);
+        $user->setEnabled($data['enabled']);
+        $user->setCurrency($data['currency']);
+        $user->setPlainPassword($data['password']);
+        $user->setCreatedAt(new \DateTime($data['created_at']));
         
         return $user;
     }

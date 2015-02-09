@@ -46,7 +46,7 @@ class UserReader extends AbstractDoctrineReader
             'shipping_address_street'       => $shippingAddress ? $shippingAddress->getStreet() : null,
             'shipping_address_postcode'     => $shippingAddress ? $shippingAddress->getPostcode() : null,
             'shipping_address_phone_number' => $shippingAddress ? $shippingAddress->getPhoneNumber() : null,
-            'billingAddress'                => $billingAddress ? $billingAddress->getCompany() : null,
+            'billing_address_company'                => $billingAddress ? $billingAddress->getCompany() : null,
             'billing_address_country'       => $billingAddress ? $billingAddress->getCountry() : null,
             'billing_address_province'      => $billingAddress ? $billingAddress->getProvince() : null,
             'billing_address_city'          => $billingAddress ? $billingAddress->getCity() : null,

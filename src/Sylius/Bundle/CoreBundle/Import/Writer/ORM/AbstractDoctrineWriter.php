@@ -29,17 +29,12 @@ abstract class AbstractDoctrineWriter implements WriterInterface
     }
     
     public function write(array $items)
-    {   
-//        var_dump($items);
-        
-        foreach ($items as $item)
-        {           
-            var_dump($item);
-            $newObject = $this->process($item);
-            $this->em->persist($newObject);
+    {           
+        foreach ($items as $item) {           
+            $item = $this->process($item);
+            $this->em->persist($item);
         }
         
-//        $this->em->persist();
         $this->em->flush();
     }
 
