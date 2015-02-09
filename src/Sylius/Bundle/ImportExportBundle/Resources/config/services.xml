@@ -54,6 +54,8 @@
         <service id="sylius.import_export.exporter" class="%sylius.import_export.exporter.class%">
             <argument type="service" id="sylius.registry.export.reader" />
             <argument type="service" id="sylius.registry.export.writer" />
+            <argument type="service" id="sylius.repository.export_job"></argument>
+            <argument type="service" id="doctrine.orm.entity_manager"></argument>
         </service>
         
         <service id="sylius.form.type.writer_choice" class="%sylius.form.type.writer_choice.class%">

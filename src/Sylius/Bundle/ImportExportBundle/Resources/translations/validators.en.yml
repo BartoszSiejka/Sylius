@@ -3,5 +3,10 @@
 
 sylius:
     export_profile:
+        name:
+            not_blank: Export profile name should not be blank.
+        description:
+            not_blank: Export profile description should not be blank.
         code:
             in_use: This code is already in use.
+            not_blank: Export profile code should not be blank.

@@ -14,8 +14,11 @@ namespace spec\Sylius\Bundle\ImportExportBundle\Form\Type;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Prophecy\Argument;
 use Sylius\Component\Registry\ServiceRegistryInterface;
+use Sylius\Component\ImportExport\Reader\ReaderInterface;
+use Sylius\Component\ImportExport\Writer\WriterInterface;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -39,7 +42,13 @@ class ExportProfileTypeSpec extends ObjectBehavior
 
     function it_build_form_with_proper_fields(
         FormBuilderInterface $builder,
-        FormFactoryInterface $factory
+        FormFactoryInterface $factory,
+        $readerRegistry,
+        $writerRegistry,
+        ReaderInterface $reader,
+        WriterInterface $writer,
+        FormInterface $readerForm,
+        FormInterface $writerForm
     ) {
         $builder->getFormFactory()->willReturn($factory);
 
@@ -50,6 +59,19 @@ class ExportProfileTypeSpec extends ObjectBehavior
         $builder->add('description', 'textarea', Argument::any())->shouldBeCalled()->willReturn($builder);
         $builder->add('reader', 'sylius_reader_choice', Argument::any())->shouldBeCalled()->willReturn($builder);
         $builder->add('writer', 'sylius_writer_choice', Argument::any())->shouldBeCalled()->willReturn($builder);
+
+        $reader->getType()->willReturn('testReader');
+        $writer->getType()->willReturn('testWriter');
+        $readerRegistry->all()->willReturn(array($reader));
+        $writerRegistry->all()->willReturn(array($writer));
+
+        $builder->create('readerConfiguration', 'sylius_testReader_reader')->shouldBeCalled()->willReturn($builder);
+        $builder->getForm()->shouldBeCalled()->willReturn($readerForm);
+        $builder->create('writerConfiguration', 'sylius_testWriter_writer')->shouldBeCalled()->willReturn($builder);
+        $builder->getForm()->shouldBeCalled()->willReturn($writerForm);
+
+        $prototypes = array('reader' => array($readerForm), 'writer' => array($writerForm));
+        $builder->setAttribute('prototypes', $prototypes)->shouldBeCalled();
 
         $this->buildForm($builder, array());
     }

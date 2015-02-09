@@ -16,15 +16,18 @@ use Sylius\Component\Registry\ServiceRegistryInterface;
 use Sylius\Component\ImportExport\Model\ExportProfile;
 use Sylius\Component\ImportExport\Writer\WriterInterface;
 use Sylius\Component\ImportExport\Reader\ReaderInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\ImportExport\Model\ExportJobInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
 class ExporterSpec extends ObjectBehavior
 {
-    function let(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry)
+    function let(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry, RepositoryInterface $exportJobRepository, EntityManager $entityManager)
     {
-        $this->beConstructedWith($readerRegistry, $writerRegistry);
+        $this->beConstructedWith($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager);
     }
 
     function it_is_initializable()
@@ -37,8 +40,11 @@ class ExporterSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Component\ImportExport\ExporterInterface');
     }
 
-    function it_exports_data_with_given_exporter($readerRegistry, $writerRegistry, ExportProfile $exportProfile, ReaderInterface $reader, WriterInterface $writer)
+    function it_exports_data_with_given_exporter($exportJobRepository, ExportJobInterface $exportJob, $readerRegistry, $writerRegistry, ExportProfile $exportProfile, ReaderInterface $reader, WriterInterface $writer)
     {
+        $exportJobRepository->createNew()->willReturn($exportJob);
+        $exportProfile->addJob($exportJob)->shouldBeCalled();
+
         $exportProfile->getReader()->willReturn('doctrine');
         $exportProfile->getReaderConfiguration()->willReturn(array());
         $exportProfile->getWriter()->willReturn('csv');
@@ -46,7 +52,7 @@ class ExporterSpec extends ObjectBehavior
 
         $readerRegistry->get('doctrine')->willReturn($reader);
         $reader->setConfiguration(array())->shouldBeCalled();
-        $reader->read()->willReturn(array('readData'));
+        $reader->read()->willReturn(array(array('readData')));
 
         $writerRegistry->get('csv')->willReturn($writer);
         $writer->setConfiguration(array())->shouldBeCalled();

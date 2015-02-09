@@ -9,12 +9,10 @@
     <thead>
         <tr>
             <th>{{ sylius_resource_sort('id', 'sylius.export_job.id'|trans) }}</th>
-            <th>{{ sylius_resource_sort('exportProfile', 'sylius.export_job.export_profile_id'|trans) }}</th>
+            <th>{{ sylius_resource_sort('exportProfile', 'sylius.export_job.export_profile'|trans) }}</th>
             <th>{{ sylius_resource_sort('status', 'sylius.export_job.status'|trans) }}</th>
-            <th>{{ sylius_resource_sort('startTime', 'sylius.export_job.startTime'|trans) }}</th>
-            <th>{{ sylius_resource_sort('endTime', 'sylius.export_job.endTime'|trans) }}</th>
-            <th>{{ sylius_resource_sort('createdAt', 'sylius.export_job.createdAt'|trans) }}</th>
-            <th>{{ sylius_resource_sort('updatedAt', 'sylius.export_job.updatedAt'|trans) }}</th>
+            <th>{{ sylius_resource_sort('startTime', 'sylius.export_job.start_time'|trans) }}</th>
+            <th>{{ sylius_resource_sort('endTime', 'sylius.export_job.end_time'|trans) }}</th>
             <th></th>
         </tr>
     </thead>
@@ -22,15 +20,13 @@
     {% for export_job in export_jobs %}
         <tr id="{{ export_job.id }}">
             <td>{{ export_job.id }}</td>
-            <td>{{ export_job.export_profile_id }}</td>
+            <td>{{ export_job.exportProfile.id }}</td>
             <td>{{ export_job.status }}</td>
-            <td>{{ export_job.startTime|date }}</td>
-            <td>{{ export_job.endTime|date }}</td>
-            <td>{{ export_job.createdAt|date }}</td>
-            <td>{{ export_job.updatedAt|date }}</td>
-            <div class="pull-right">
-                {{ buttons.show(path('sylius_backend_export_job_show', {'id': export_job.id})) }}
-            </div>
+            <td>{{ export_job.startTime|date('d/m/Y H:i:s') }}</td>
+            <td>{{ export_job.endTime|date('d/m/Y H:i:s') }}</td>
+            <td class="pull-right">
+                {{ buttons.show(path('sylius_backend_export_job_show', {'id': export_job.id, 'profileId': export_job.exportProfile.id })) }}
+            </td>
         </tr>
     {% endfor %}
     </tbody>

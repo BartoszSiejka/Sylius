@@ -7,7 +7,7 @@ Feature: Export profiles
     Background:
         Given there are following export profiles configured:
             | name                 | description | code           | reader         | reader configuration      | writer       | writer configuration                                |
-            | ProductExportProfile | Lorem ipsum | product_export | product_reader | Rows number:10            | csv_writer   | Delimiter:\;,Enclosure:\",File path:\tmp\output.csv |
+            | ProductExportProfile | Lorem ipsum | product_export | product_reader | Rows number:10            | csv_writer   | Delimiter:;,Enclosure:",File path:\tmp\output.csv   |
             | UsersExportProfile   | Lorem ipsum | user_export    | user_reader    | Rows number:10            | excel_writer | File path:\tmp\output.csv                           |
         And there is default currency configured
         And there are following users:
@@ -28,6 +28,9 @@ Feature: Export profiles
             | Name        | ExportProfile1    | 
             | Description | Lorem ipsum dolor |
             | Code        | export_profile    |
+            | Rows number | 10                |
+            | Delimiter   | ;                 |
+            | Enclosure   | "                 |
             | File path   | \tmp\file.csv     |
           And I press "Create"
          Then I should be on the page of export profile "ExportProfile1"
@@ -39,9 +42,11 @@ Feature: Export profiles
             | Name        | ExportProfile2    | 
             | Description | Lorem ipsum dolor |
             | Code        | export_profile    |
+            | Enclosure   | "                 |
             | File path   | \tmp\file.csv     |
           And I select "product_reader" from "Reader"
           And I fill in "Rows number" with "1000"
+          And I fill in "Delimiter" with "*"
           And I press "Create"
          Then I should be on the page of export profile "ExportProfile2"
           And I should see "Export profile has been successfully created."
@@ -53,6 +58,9 @@ Feature: Export profiles
             | Name        | ExportProfile3    | 
             | Description | Lorem ipsum dolor |
             | Code        | product_export    |
+            | Rows number | 10                |
+            | Delimiter   | ;                 |
+            | Enclosure   | "                 |
             | File path   | \tmp\file.csv     |
           And I press "Create"
          Then I should still be on the export profile creation page
@@ -77,6 +85,7 @@ Feature: Export profiles
         Given I am editing export profile "ProductExportProfile"
          When I fill in "Name" with "ProductExportProfile2"
           And I fill in "Description" with "Lorem ipsum dolor"
+          And I fill in "File path" with "\tmp\output2.csv"
           And I press "Save changes"
          Then I should see "Export profile has been successfully updated."
           And "ProductExportProfile2" should appear on the page

@@ -13,6 +13,10 @@ namespace Sylius\Component\ImportExport;
 
 use Sylius\Component\ImportExport\Model\ExportProfileInterface;
 use Sylius\Component\Registry\ServiceRegistryInterface;
+use Doctrine\ORM\EntityManager;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\ImportExport\Model\Job;
+use Sylius\Component\ImportExport\Model\JobInterface;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -34,19 +38,37 @@ class Exporter implements ExporterInterface
     private $writerRegistry;
 
     /**
+     * Export job repository
+     *
+     * @var RepositoryInterface
+     */
+    private $exportJobRepository;
+
+    /**
+     * Entity manager
+     *
+     * @var EntityManager
+     */
+    private $entityManager;    
+
+    /**
      * Constructor
      *
      * @var ServiceRegistryInterface $readerRegistry
      * @var ServiceRegistryInterface $writerRegistry
      */
-    public function __construct(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry)
+    public function __construct(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry, RepositoryInterface $exportJobRepository, EntityManager $entityManager)
     {
         $this->readerRegistry = $readerRegistry;
         $this->writerRegistry = $writerRegistry;
+        $this->exportJobRepository = $exportJobRepository;
+        $this->entityManager = $entityManager;
     }
 
     public function export(ExportProfileInterface $exportProfile)
     {
+        $exportJob = $this->startExportJob($exportProfile);
+
         if (null === $readerType = $exportProfile->getReader()) {
             throw new \InvalidArgumentException('Cannot write data with ExportProfile instance without writer defined.');
         }
@@ -63,5 +85,44 @@ class Exporter implements ExporterInterface
         foreach ($reader->read() as $data) {
             $writer->write($data);
         }
+
+        $this->endExportJob($exportJob);
+    }
+
+    /**
+     * Create export job
+     *
+     * @param ExportProfileInterface $exportProfile
+     * @return JobInterface
+     */
+    private function startExportJob(ExportProfileInterface $exportProfile)
+    {
+        $exportJob = $this->exportJobRepository->createNew();
+        $exportJob->setStartTime(new \DateTime());
+        $exportJob->setStatus(Job::RUNNING);
+        $exportJob->setExportProfile($exportProfile);
+
+        $exportProfile->addJob($exportJob);
+
+        $this->entityManager->persist($exportJob);
+        $this->entityManager->persist($exportProfile);
+        $this->entityManager->flush();
+
+        return $exportJob;
+    }
+
+    /**
+     * End export job 
+     *
+     * @param JobInterface $exportJob
+     */
+    private function endExportJob(JobInterface $exportJob) 
+    {
+        $exportJob->setUpdatedAt(new \DateTime());
+        $exportJob->setEndTime(new \DateTime());
+        $exportJob->setStatus(Job::COMPLETED);
+
+        $this->entityManager->persist($exportJob);
+        $this->entityManager->flush();
     }
 }

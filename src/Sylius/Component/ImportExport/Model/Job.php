@@ -48,6 +48,13 @@ abstract class Job implements JobInterface
     protected $updatedAt;
 
     /**
+     * Job status
+     */
+    const RUNNING   = 'running';
+    const COMPLETED = 'completed';
+    const FAILED    = 'failed';
+
+    /**
      * Gets the value of id.
      *
      * @return integer
@@ -175,5 +182,13 @@ abstract class Job implements JobInterface
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function equals(JobInterface $job)
+    {
+        return $this === $job;
     }
 }

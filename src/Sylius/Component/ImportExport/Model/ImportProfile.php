@@ -23,4 +23,40 @@ class ImportProfile extends Profile implements ExportProfileInterface
         $this->reader = '';
         $this->readerConfiguration = array();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addJob(JobInterface $job)
+    {
+        if ($this->hasJob($job)) {
+            return $this;
+        }
+
+        foreach ($this->jobs as $existingJob) {
+            if ($job->equals($existingJob)) {
+                $existingJob->merge($job, false);
+
+                return $this;
+            }
+        }
+
+        $job->setImportProfile($this);
+        $this->jobs->add($job);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeJob(JobInterface $job)
+    {
+        if ($this->hasJob($job)) {
+            $job->setImportProfile(null);
+            $this->jobs->removeElement($job);
+        }
+
+        return $this;
+    }
 }
