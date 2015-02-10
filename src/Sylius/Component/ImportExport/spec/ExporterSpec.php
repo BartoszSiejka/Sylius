@@ -19,15 +19,16 @@ use Sylius\Component\ImportExport\Reader\ReaderInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\ImportExport\Model\ExportJobInterface;
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
 class ExporterSpec extends ObjectBehavior
 {
-    function let(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry, RepositoryInterface $exportJobRepository, EntityManager $entityManager)
+    function let(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry, RepositoryInterface $exportJobRepository, EntityManager $entityManager, Logger $logger)
     {
-        $this->beConstructedWith($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager);
+        $this->beConstructedWith($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager, $logger);
     }
 
     function it_is_initializable()
@@ -40,9 +41,20 @@ class ExporterSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Component\ImportExport\ExporterInterface');
     }
 
-    function it_exports_data_with_given_exporter($exportJobRepository, ExportJobInterface $exportJob, $readerRegistry, $writerRegistry, ExportProfile $exportProfile, ReaderInterface $reader, WriterInterface $writer)
+    function it_exports_data_with_given_exporter($exportJobRepository, ExportJobInterface $exportJob, $readerRegistry, $writerRegistry, ExportProfile $exportProfile, ReaderInterface $reader, WriterInterface $writer, $logger)
     {
         $exportJobRepository->createNew()->willReturn($exportJob);
+        $exportProfile->getId()->willReturn(1);
+
+        $startTime = new \DateTime();
+        $exportJob->setStartTime($startTime)->shouldBeCalled()->willReturn($exportJob);
+        $exportJob->setStatus('running')->shouldBeCalled()->willReturn($exportJob);
+        $exportJob->setExportProfile($exportProfile)->shouldBeCalled()->willReturn($exportJob);
+
+        $exportJob->getId()->willReturn(1);
+        $exportJob->getStartTime()->willReturn($startTime);
+
+        $logger->info(sprintf("ExportProfile: 1; StartTime: %s", $startTime->format('Y-m-d H:i:s')))->shouldBeCalled();
         $exportProfile->addJob($exportJob)->shouldBeCalled();
 
         $exportProfile->getReader()->willReturn('doctrine');
@@ -58,6 +70,13 @@ class ExporterSpec extends ObjectBehavior
         $writer->setConfiguration(array())->shouldBeCalled();
 
         $writer->write(array('readData'))->shouldBeCalled();
+
+        $endTime = new \DateTime();
+        $exportJob->setUpdatedAt($endTime)->shouldBeCalled()->willReturn($exportJob);
+        $exportJob->setEndTime($endTime)->shouldBeCalled()->willReturn($exportJob);
+        $exportJob->setStatus('completed')->shouldBeCalled()->willReturn($exportJob);
+        $exportJob->getEndTime()->shouldBeCalled()->willReturn($endTime);
+        $logger->info(sprintf("Exportjob: 1; EndTime: %s", $endTime->format('Y-m-d H:i:s')))->shouldBeCalled();
 
         $this->export($exportProfile);
     }

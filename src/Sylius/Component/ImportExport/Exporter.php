@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\ImportExport\Model\Job;
 use Sylius\Component\ImportExport\Model\JobInterface;
+use Monolog\Logger;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -49,7 +50,14 @@ class Exporter implements ExporterInterface
      *
      * @var EntityManager
      */
-    private $entityManager;    
+    private $entityManager;
+
+    /**
+     * Logger for exporter
+     *
+     * @var Logger
+     */    
+    private $logger;
 
     /**
      * Constructor
@@ -57,12 +65,13 @@ class Exporter implements ExporterInterface
      * @var ServiceRegistryInterface $readerRegistry
      * @var ServiceRegistryInterface $writerRegistry
      */
-    public function __construct(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry, RepositoryInterface $exportJobRepository, EntityManager $entityManager)
+    public function __construct(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry, RepositoryInterface $exportJobRepository, EntityManager $entityManager, Logger $logger)
     {
         $this->readerRegistry = $readerRegistry;
         $this->writerRegistry = $writerRegistry;
         $this->exportJobRepository = $exportJobRepository;
         $this->entityManager = $entityManager;
+        $this->logger = $logger;
     }
 
     public function export(ExportProfileInterface $exportProfile)
@@ -70,9 +79,11 @@ class Exporter implements ExporterInterface
         $exportJob = $this->startExportJob($exportProfile);
 
         if (null === $readerType = $exportProfile->getReader()) {
-            throw new \InvalidArgumentException('Cannot write data with ExportProfile instance without writer defined.');
+            $this->logger->error(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
+            throw new \InvalidArgumentException('Cannot read data with ExportProfile instance without reader defined.');
         }
         if (null === $writerType = $exportProfile->getWriter()) {
+            $this->logger->error(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
             throw new \InvalidArgumentException('Cannot write data with ExportProfile instance without writer defined.');
         }
 
@@ -101,6 +112,7 @@ class Exporter implements ExporterInterface
         $exportJob->setStartTime(new \DateTime());
         $exportJob->setStatus(Job::RUNNING);
         $exportJob->setExportProfile($exportProfile);
+        $this->logger->info(sprintf("ExportProfile: %d; StartTime: %s", $exportProfile->getId(), $exportJob->getStartTime()->format('Y-m-d H:i:s')));
 
         $exportProfile->addJob($exportJob);
 
@@ -121,6 +133,7 @@ class Exporter implements ExporterInterface
         $exportJob->setUpdatedAt(new \DateTime());
         $exportJob->setEndTime(new \DateTime());
         $exportJob->setStatus(Job::COMPLETED);
+        $this->logger->info(sprintf("Exportjob: %d; EndTime: %s", $exportJob->getId(), $exportJob->getEndTime()->format('Y-m-d H:i:s')));
 
         $this->entityManager->persist($exportJob);
         $this->entityManager->flush();

@@ -43,10 +43,6 @@ class CsvWriterType extends AbstractType
                     new Length(array('groups' => array('sylius'), 'min' => 1, 'max' => 1)),
                 ),
             ))
-            ->add('add_header', 'checkbox', array(
-                'label'    => 'sylius.form.writer.csv.add_header',
-                'required' => false,
-            ))
             ->add('file', 'text', array(
                 'label'    => 'sylius.form.writer.file',
                 'required' => true,

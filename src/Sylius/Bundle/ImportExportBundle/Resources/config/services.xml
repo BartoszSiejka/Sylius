@@ -60,8 +60,10 @@
         <service id="sylius.import_export.exporter" class="%sylius.import_export.exporter.class%">
             <argument type="service" id="sylius.registry.export.reader" />
             <argument type="service" id="sylius.registry.export.writer" />
-            <argument type="service" id="sylius.repository.export_job"></argument>
-            <argument type="service" id="doctrine.orm.entity_manager"></argument>
+            <argument type="service" id="sylius.repository.export_job" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="logger" />
+            <tag name="monolog.logger" channel="exporter" />
         </service>
         
         <service id="sylius.form.type.export_writer_choice" class="%sylius.form.type.export_writer_choice.class%">
