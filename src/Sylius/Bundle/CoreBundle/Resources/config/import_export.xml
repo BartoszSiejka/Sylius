@@ -46,6 +46,9 @@
         <service id="sylius.import.user_writer" class="%sylius.import.user_writer.class%">
             <argument type="service" id="sylius.repository.user" />
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="sylius.repository.address" />
+            <argument type="service" id="sylius.repository.country" />
+            <argument type="service" id="sylius.repository.province" />
             <tag name="sylius.import.writer" writer="user_writer" label="User writer" />
         </service>
     </services>

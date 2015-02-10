@@ -61,16 +61,16 @@ class ProductWriter extends AbstractDoctrineWriter
             $product = $this->productRepository->createNew();
         }
 
-        if (!isset($data['name'])) {
+        if (isset($data['name'])) {
             $product->setName($data['name']);
         }
-        if (!isset($data['price'])) {
+        if (isset($data['price'])) {
             $product->setPrice($data['price']);
         }
-        if (!isset($data['description'])) {
+        if (isset($data['description'])) {
             $product->setDescription($data['description']);
         }
-        if (!isset($data['short_description'])) {
+        if (isset($data['short_description'])) {
             $product->setShortDescription($data['short_description']);
         }
         if (!empty($data['archetype'])) {
@@ -85,16 +85,16 @@ class ProductWriter extends AbstractDoctrineWriter
             $shippingCategory = $this->shippingCategoryRepository->find($data['shipping_category']);
             $product->setShippingCategory($shippingCategory);
         }
-        if (!isset($data['is_available_on'])) {
+        if (isset($data['is_available_on'])) {
             $product->setAvailableOn(new \DateTime($data['is_available_on']));
         }
-        if (!isset($data['meta_keywords'])) {
+        if (isset($data['meta_keywords'])) {
             $product->setMetaKeyWords($data['meta_keywords']);
         }
-        if (!isset($data['meta_description'])) {
+        if (isset($data['meta_description'])) {
             $product->setMetaDescription($data['meta_description']);
         }
-        if (!isset($data['createdAt'])) {
+        if (isset($data['createdAt'])) {
             $product->setCreatedAt(new \DateTime($data['createdAt']));
         }
 
