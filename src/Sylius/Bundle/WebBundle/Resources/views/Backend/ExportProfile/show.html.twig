@@ -13,6 +13,7 @@
 {% block content %}
     <div class="page-header">
         <div class="actions-menu">
+            {{ buttons.generic(path('sylius_backend_export_job_index', { 'profileId': export_profile.id }), 'sylius.export_profile.jobs'|trans, 'align-justify') }}
             {{ buttons.manage(path('sylius_backend_export_profile_index'), 'sylius.export_profile.manage'|trans) }}
             {{ buttons.edit(path('sylius_backend_export_profile_update', {'id': export_profile.id})) }}
             {{ buttons.delete(path('sylius_backend_export_profile_delete', {'id': export_profile.id}), null, false, false) }}

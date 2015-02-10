@@ -37,10 +37,6 @@ class CsvWriterTypeSpec extends ObjectBehavior
             ->willReturn($builder)
         ;
         $builder
-            ->add('add_header', 'checkbox', Argument::type('array'))
-            ->willReturn($builder)
-        ;
-        $builder
             ->add('file', 'text', Argument::type('array'))
             ->willReturn($builder)
         ;

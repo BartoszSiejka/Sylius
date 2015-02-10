@@ -23,4 +23,40 @@ class ImportProfile extends Profile implements ImportProfileInterface
         $this->writer = 'product_writer';
         $this->writerConfiguration = array();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addJob(JobInterface $job)
+    {
+        if ($this->hasJob($job)) {
+            return $this;
+        }
+
+        foreach ($this->jobs as $existingJob) {
+            if ($job->equals($existingJob)) {
+                $existingJob->merge($job, false);
+
+                return $this;
+            }
+        }
+
+        $job->setImportProfile($this);
+        $this->jobs->add($job);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeJob(JobInterface $job)
+    {
+        if ($this->hasJob($job)) {
+            $job->setImportProfile(null);
+            $this->jobs->removeElement($job);
+        }
+
+        return $this;
+    }
 }

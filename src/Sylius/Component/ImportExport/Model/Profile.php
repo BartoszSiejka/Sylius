@@ -11,6 +11,8 @@
 
 namespace Sylius\Component\ImportExport\Model;
 
+use Doctrine\Common\Collections\Collection;
+
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
@@ -56,6 +58,13 @@ abstract class Profile implements ProfileInterface
      * @var array
      */
     protected $readerConfiguration;
+
+    /**
+     * Jobs of export Profile.
+     *
+     * @var Collection|JobInterface[]
+     */
+    protected $jobs;
 
     /**
      * Gets the value of id.
@@ -209,5 +218,59 @@ abstract class Profile implements ProfileInterface
         $this->readerConfiguration = $readerConfiguration;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getJobs()
+    {
+        return $this->jobs;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setJobs(Collection $jobs)
+    {
+        $this->jobs = $jobs;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearJobs()
+    {
+        $this->jobs->clear();
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function countJobs()
+    {
+        return $this->jobs->count();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    abstract public function addJob(JobInterface $job);
+
+    /**
+     * {@inheritdoc}
+     */
+    abstract public function removeJob(JobInterface $job);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasJob(JobInterface $job)
+    {
+        return $this->jobs->contains($job);
     }
 }

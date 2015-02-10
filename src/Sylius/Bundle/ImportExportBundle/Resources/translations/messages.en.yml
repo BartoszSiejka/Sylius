@@ -27,5 +27,6 @@ sylius:
                 delimiter: Delimiter
                 enclosure: Enclosure
                 header: Was header set?
+                batch_size: Rows numbers
         import.export:
             export: export

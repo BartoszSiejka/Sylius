@@ -153,6 +153,8 @@ sylius:
             index: Import Profile
         inventory:
             index: Inventory
+        export_job:
+            index: Jobs
         locale:
             index: Locales
         menu:
@@ -311,6 +313,7 @@ sylius:
         create: Create profile
         create_header: New export profile
         manage: Manage
+        jobs: Jobs
         code: Code
         id: ID
         name: Name
@@ -324,6 +327,18 @@ sylius:
         update_header: Editing profile
         updated_at: Last update
         general_info: General info
+        show: Show export profile
+    export_job:
+        index_header: Jobs
+        manage: Manage
+        header: Job
+        export_profile: Export profile
+        id: ID
+        status: status
+        start_time: Start time
+        end_time: End time
+        created_at: Created at
+        updated_at: Updated at
     filter: Filter
     form:
         cart:

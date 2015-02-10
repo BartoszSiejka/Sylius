@@ -29,10 +29,6 @@ class XlsWriterTypeSpec extends ObjectBehavior
     function it_builds_form_with_proper_fields(FormBuilderInterface $builder)
     {
         $builder
-            ->add('add_header', 'checkbox', Argument::type('array'))
-            ->willReturn($builder)
-        ;
-        $builder
             ->add('file', 'text', Argument::type('array'))
             ->willReturn($builder)
         ;

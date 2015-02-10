@@ -27,10 +27,6 @@ class XlsWriterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('add_header', 'checkbox', array(
-                'label'    => 'sylius.form.writer.csv.add_header',
-                'required' => false,
-            ))
             ->add('file', 'text', array(
                 'label'    => 'sylius.form.writer.file',
                 'required' => true,
