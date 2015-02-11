@@ -101,6 +101,9 @@
         <service id="sylius.import_export.importer" class="%sylius.import_export.importer.class%">
             <argument type="service" id="sylius.registry.import.reader" />
             <argument type="service" id="sylius.registry.import.writer" />
+            <argument type="service" id="sylius.repository.import_job" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="logger" />
         </service>
         
         <service id="sylius.form.type.import_writer_choice" class="%sylius.form.type.import_writer_choice.class%">

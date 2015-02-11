@@ -21,7 +21,7 @@ use Sylius\Component\Shipping\Model\ShippingCategoryInterface;
 use Sylius\Component\Taxation\Model\TaxCategoryInterface;
 
 /**
- * @author Łukasz Chruściel <lukusz.chrusciel@lakion.com>
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
 class ProductWriterSpec extends ObjectBehavior
 {

@@ -48,6 +48,11 @@ abstract class Job implements JobInterface
     protected $updatedAt;
 
     /**
+     * @var ProfileInterface
+     */
+    protected $profile;
+
+    /**
      * Job status
      */
     const RUNNING   = 'running';
@@ -180,6 +185,18 @@ abstract class Job implements JobInterface
     public function setUpdatedAt(\DateTime $updatedAt)
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+    
+    public function getProfile()
+    {
+        return $this->profile;;
+    }
+
+    public function setProfile(ProfileInterface $profile)
+    {
+        $this->profile = $profile;
 
         return $this;
     }
