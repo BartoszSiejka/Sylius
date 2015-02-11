@@ -39,10 +39,6 @@ class CsvReaderType extends AbstractType
                 'label'    => 'sylius.form.reader.csv.batch_size',
                 'empty_data'     => '100',
             ))
-            ->add('header', 'checkbox', array(
-                'label'    => 'sylius.form.reader.csv.header',
-                'required' => false,
-            ))
             ->add('file', 'text', array(
                 'label'    => 'sylius.form.reader.file',
                 'required' => true,

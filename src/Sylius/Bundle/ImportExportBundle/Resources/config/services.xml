@@ -25,17 +25,15 @@
 
         <parameter key="sylius.form.type.reader.product_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductReaderType</parameter>
         <parameter key="sylius.form.type.reader.user_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\UserReaderType</parameter>
-        <parameter key="sylius.form.type.reader.csv.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\csvReaderType</parameter>
+        <parameter key="sylius.form.type.reader.csv.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\CsvReaderType</parameter>
 
         <parameter key="sylius.form.type.writer.csv_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\CsvWriterType</parameter>
-        <parameter key="sylius.form.type.writer.xls_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\XlsWriterType</parameter>
 
         <parameter key="sylius.import_export.importer.class">Sylius\Component\ImportExport\Importer</parameter> 
         <parameter key="sylius.form.type.import_writer_choice.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\ImportWriterChoiceType</parameter>
         <parameter key="sylius.form.type.import_reader_choice.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ImportReaderChoiceType</parameter>
 
         <parameter key="sylius.export.csv_writer.class">Sylius\Component\ImportExport\Writer\CsvWriter</parameter>
-        <parameter key="sylius.export.xls_writer.class">Sylius\Component\ImportExport\Writer\XlsWriter</parameter>
 
         <parameter key="sylius.import.csv_reader.class">Sylius\Component\ImportExport\Reader\CsvReader</parameter>
         <parameter key="sylius.form.type.writer.product_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\ProductWriterType</parameter>
@@ -76,12 +74,6 @@
         </service>
         <service id="sylius.form.type.writer.csv_type" class="%sylius.form.type.writer.csv_type.class%">
             <tag name="form.type" alias="sylius_csv_writer" />
-        </service>
-        <service id="sylius.export.xls_writer" class="%sylius.export.xls_writer.class%">
-            <tag name="sylius.export.writer" writer="xls_writer" label="Xls writer" />
-        </service>
-        <service id="sylius.form.type.writer.xls_type" class="%sylius.form.type.writer.xls_type.class%">
-            <tag name="form.type" alias="sylius_xls_writer" />
         </service>
         
         <service id="sylius.form.type.export_reader_choice" class="%sylius.form.type.export_reader_choice.class%">
