@@ -55,7 +55,9 @@ class ProductWriter extends AbstractDoctrineWriter
     
     public function process($data) 
     {
-        $product = $this->productRepository->find($data['id']);
+        if (isset($data['id'])) {
+            $product = $this->productRepository->find($data['id']);
+        }
 
         if (null === $product) {
             $product = $this->productRepository->createNew();

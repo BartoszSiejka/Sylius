@@ -11,6 +11,8 @@
 
 namespace Sylius\Component\ImportExport\Writer;
 
+use Monolog\Logger;
+
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
@@ -24,7 +26,7 @@ interface WriterInterface
     /**
      * @param array $configuration
      */
-    public function setConfiguration(array $configuration);
+    public function setConfiguration(array $configuration, Logger $logger);
 
     /**
     *

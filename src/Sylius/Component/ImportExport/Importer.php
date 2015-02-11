@@ -53,13 +53,14 @@ class Importer extends JobRunner implements ImporterInterface
         }
 
         $reader = $this->readerRegistry->get($readerType);
-        $reader->setConfiguration($importProfile->getReaderConfiguration());
+        $reader->setConfiguration($importProfile->getReaderConfiguration(), $this->logger);
 
         $writer = $this->writerRegistry->get($writerType);
-        $writer->setConfiguration($importProfile->getWriterConfiguration());
+        $writer->setConfiguration($importProfile->getWriterConfiguration(), $this->logger);
 
-        foreach ($reader->read() as $data) {    
-            $writer->write($data);
+
+        while (null !== ($readedLine = $reader->read())) {
+            $writer->write($readedLine);
         }
 
         $this->endJob($job);

@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
 use Sylius\Component\ImportExport\Reader\ReaderInterface;
+use Monolog\Logger;
 
 /**
  * Export reader.
@@ -23,7 +24,8 @@ abstract class AbstractDoctrineReader implements ReaderInterface
     private $results;
     private $running = false;
     private $configuration;
-    
+    private $logger;
+
     public function read()
     {
         if (!$this->running)
@@ -50,9 +52,10 @@ abstract class AbstractDoctrineReader implements ReaderInterface
         return $results;
     }
 
-    public function setConfiguration (array $configuration)
+    public function setConfiguration (array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
+        $this->logger = $logger;
     }  
 
     public abstract function process($result);

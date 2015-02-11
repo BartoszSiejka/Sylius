@@ -13,6 +13,7 @@ namespace Sylius\Component\ImportExport\Reader;
 
 use Doctrine\ORM\EntityManager;
 use EasyCSV\Reader;
+use Monolog\Logger;
 
 /**
  * Csv import reader
@@ -37,6 +38,13 @@ class CsvReader implements ReaderInterface
      * @var array
      */
     private $configuration;
+
+    /**
+     * Work logger
+     *
+     * @var Logger
+     */    
+    protected $logger;
 
     /**
      * {@inheritdoc}
@@ -68,9 +76,10 @@ class CsvReader implements ReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function setConfiguration(array $configuration)
+    public function setConfiguration(array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
+        $this->logger = $logger;
     }
 
     /**

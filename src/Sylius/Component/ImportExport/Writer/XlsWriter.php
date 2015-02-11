@@ -12,6 +12,8 @@
 namespace Sylius\Component\ImportExport\Writer;
 
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
+
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -23,6 +25,13 @@ class XlsWriter implements WriterInterface
      */
     private $configuration;
 
+    /**
+     * Work logger
+     *
+     * @var Logger
+     */    
+    protected $logger;
+
     public function write(array $items)
     {
         
@@ -31,7 +40,7 @@ class XlsWriter implements WriterInterface
     /**
      * @param array $configuration
      */
-    public function setConfiguration(array $configuration)
+    public function setConfiguration(array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
     }

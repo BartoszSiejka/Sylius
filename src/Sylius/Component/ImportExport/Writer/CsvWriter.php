@@ -13,6 +13,8 @@ namespace Sylius\Component\ImportExport\Writer;
 
 use Doctrine\ORM\EntityManager;
 use EasyCSV\Writer;
+use Monolog\Logger;
+
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -42,6 +44,13 @@ class CsvWriter implements WriterInterface
     private $isHeaderSet = false;
 
     /**
+     * Work logger
+     *
+     * @var Logger
+     */    
+    protected $logger;
+
+    /**
      * @param array $items
      */
     public function write(array $items)
@@ -66,7 +75,7 @@ class CsvWriter implements WriterInterface
     /**
      * {@inheritdoc}
      */
-    public function setConfiguration(array $configuration)
+    public function setConfiguration(array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
     }
