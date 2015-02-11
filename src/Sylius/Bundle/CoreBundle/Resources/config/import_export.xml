@@ -20,6 +20,7 @@
         <parameter key="sylius.export.product_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\ProductReader</parameter>
         <parameter key="sylius.export.product_attribute_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\ProductAttributeReader</parameter>
         <parameter key="sylius.export.product_option_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\ProductOptionReader</parameter>
+        <parameter key="sylius.export.taxonomy_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\TaxonomyReader</parameter>
         
         <parameter key="sylius.import.user_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\UserWriter</parameter>
         <parameter key="sylius.import.product_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\ProductWriter</parameter>
@@ -44,6 +45,11 @@
         <service id="sylius.export.product_option_reader" class="%sylius.export.product_option_reader.class%">
             <argument type="service" id="sylius.repository.product_option" />
             <tag name="sylius.export.reader" reader="product_option_reader" label="Product option reader" />
+        </service>
+        <service id="sylius.export.taxonomy_reader" class="%sylius.export.taxonomy_reader.class%">
+            <argument type="service" id="sylius.repository.taxonomy" />
+            <argument type="service" id="sylius.repository.taxon" />
+            <tag name="sylius.export.reader" reader="taxonomy_reader" label="Taxonomy reader" />
         </service>
 
         <!-- Import writer -->
