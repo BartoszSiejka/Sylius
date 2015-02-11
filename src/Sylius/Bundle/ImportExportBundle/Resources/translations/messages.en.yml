@@ -25,6 +25,6 @@ sylius:
             csv:
                 delimiter: Delimiter
                 enclosure: Enclosure
-                batch_size: Rows number
+                batch_size: Rows numbers
         import.export:
             export: export

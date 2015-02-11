@@ -35,7 +35,7 @@ class CsvReaderType extends AbstractType
                 'label'    => 'sylius.form.reader.csv.enclosure',
                 'empty_data'     => '"',
             ))
-            ->add('batch', 'text', array(
+            ->add('batch', 'number', array(
                 'label'    => 'sylius.form.reader.csv.batch_size',
                 'empty_data'     => '100',
             ))

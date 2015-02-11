@@ -13,36 +13,27 @@ namespace Sylius\Component\ImportExport;
 
 use Sylius\Component\ImportExport\Model\ImportProfileInterface;
 use Sylius\Component\Registry\ServiceRegistryInterface;
+use Doctrine\ORM\EntityManager;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\ImportExport\Model\Job;
+use Sylius\Component\ImportExport\Model\JobInterface;
+use Monolog\Logger;
 
 /**
- * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class Importer implements ImporterInterface
+class Importer extends JobRunner implements ImporterInterface
 {
     /**
-     * Importer registry
-     *
-     * @var ServiceRegistryInterface
+     * {@inheritdoc}
      */
-    private $readerRegistry;
-
-    /**
-     * Importer registry
-     *
-     * @var ServiceRegistryInterface
-     */
-    private $writerRegistry;
-
-    /**
-     * Constructor
-     *
-     * @var ServiceRegistryInterface $readerRegistry
-     * @var ServiceRegistryInterface $writerRegistry
-     */
-    public function __construct(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry)
-    {
-        $this->readerRegistry = $readerRegistry;
-        $this->writerRegistry = $writerRegistry;
+    public function __construct(
+        ServiceRegistryInterface $readerRegistry, 
+        ServiceRegistryInterface $writerRegistry,
+        RepositoryInterface $importJobRepository,
+        EntityManager $entityManager,
+        Logger $logger) {
+        parent::__construct($readerRegistry, $writerRegistry, $importJobRepository, $entityManager, $logger);
     }
 
     /**
@@ -50,10 +41,14 @@ class Importer implements ImporterInterface
      */
     public function import(ImportProfileInterface $importProfile)
     {
+        $job = $this->startJob($importProfile);
+
         if (null === $readerType = $importProfile->getReader()) {
+            $this->logger->error(sprintf('ImportProfile: %d. Cannot read data with ImportProfile instance without reader defined.', $importProfile->getId()));
             throw new \InvalidArgumentException('Cannot read data with ImportProfile instance without reader defined.');
         }
         if (null === $writerType = $importProfile->getWriter()) {
+            $this->logger->error(sprintf('ImportProfile: %d. Cannot read data with ImportProfile instance without reader defined.', $importProfile->getId()));
             throw new \InvalidArgumentException('Cannot write data with ImportProfile instance without writer defined.');
         }
 
@@ -63,8 +58,10 @@ class Importer implements ImporterInterface
         $writer = $this->writerRegistry->get($writerType);
         $writer->setConfiguration($importProfile->getWriterConfiguration());
 
-        while (null !== ($readedLine = $reader->read())) {
-            $writer->write($readedLine);
+        foreach ($reader->read() as $data) {    
+            $writer->write($data);
         }
+
+        $this->endJob($job);
     }
 }

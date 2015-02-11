@@ -37,12 +37,18 @@
         <!-- Import writer -->
         <service id="sylius.import.product_writer" class="%sylius.import.product_writer.class%">
             <argument type="service" id="sylius.repository.product" />
+            <argument type="service" id="sylius.repository.product_archetype" />
+            <argument type="service" id="sylius.repository.tax_category" />
+            <argument type="service" id="sylius.repository.shipping_category" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <tag name="sylius.import.writer" writer="product_writer" label="Product writer" />
         </service>
         <service id="sylius.import.user_writer" class="%sylius.import.user_writer.class%">
             <argument type="service" id="sylius.repository.user" />
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="sylius.repository.address" />
+            <argument type="service" id="sylius.repository.country" />
+            <argument type="service" id="sylius.repository.province" />
             <tag name="sylius.import.writer" writer="user_writer" label="User writer" />
         </service>
     </services>
