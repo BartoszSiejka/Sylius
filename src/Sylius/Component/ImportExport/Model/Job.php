@@ -53,6 +53,11 @@ abstract class Job implements JobInterface
     protected $profile;
 
     /**
+     * @var string
+     */
+    protected $filePath;
+
+    /**
      * Job status
      */
     const RUNNING   = 'running';
@@ -188,15 +193,51 @@ abstract class Job implements JobInterface
 
         return $this;
     }
-
+    
+    /**
+     * Gets job's profile.
+     *
+     * @return ProfileInterface
+     */
     public function getProfile()
     {
         return $this->profile;
     }
 
+    /**
+     * Sets job's profile.
+     *
+     * @param ProfileInterface $profile the profile
+     *
+     * @return self
+     */
     public function setProfile(ProfileInterface $profile)
     {
         $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of filePath.
+     *
+     * @return string
+     */
+    public function getFilePath()
+    {
+        return $this->filePath;
+    }
+
+    /**
+     * Sets the value of filePath.
+     *
+     * @param string $filePath the filePath
+     *
+     * @return self
+     */
+    public function setFilePath($filePath)
+    {
+        $this->filePath = $filePath;
 
         return $this;
     }

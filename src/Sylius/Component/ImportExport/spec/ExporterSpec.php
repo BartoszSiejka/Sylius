@@ -20,6 +20,7 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\ImportExport\Model\ExportJobInterface;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -62,7 +63,8 @@ class ExporterSpec extends ObjectBehavior
         $exportJob->getId()->willReturn(1);
         $exportJob->getStartTime()->willReturn($startTime);
 
-        $logger->info(sprintf("Profile: 1; StartTime: %s", $startTime->format('Y-m-d H:i:s')))->shouldBeCalled();
+        $logger->pushHandler(new StreamHandler(sprintf('app/logs/export_job_%d_%s.log', 1, $startTime->format('Y_m_d_H_i_s'))))->shouldBeCalled();
+        $logger->addInfo(sprintf("Profile: 1; StartTime: %s", $startTime->format('Y-m-d H:i:s')))->shouldBeCalled();
         $exportProfile->addJob($exportJob)->shouldBeCalled();
 
         $exportProfile->getReader()->willReturn('doctrine');
@@ -78,13 +80,14 @@ class ExporterSpec extends ObjectBehavior
         $writer->setConfiguration(array(), $logger)->shouldBeCalled();
 
         $writer->write(array('readData'))->shouldBeCalled();
+        $writer->finalize($exportJob)->shouldBeCalled();
 
         $endTime = new \DateTime();
         $exportJob->setUpdatedAt($endTime)->shouldBeCalled()->willReturn($exportJob);
         $exportJob->setEndTime($endTime)->shouldBeCalled()->willReturn($exportJob);
         $exportJob->setStatus('completed')->shouldBeCalled()->willReturn($exportJob);
         $exportJob->getEndTime()->shouldBeCalled()->willReturn($endTime);
-        $logger->info(sprintf("Job: 1; EndTime: %s", $endTime->format('Y-m-d H:i:s')))->shouldBeCalled();
+        $logger->addInfo(sprintf("Job: 1; EndTime: %s", $endTime->format('Y-m-d H:i:s')))->shouldBeCalled();
 
         $this->export($exportProfile);
     }

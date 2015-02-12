@@ -54,6 +54,7 @@ parameters:
     sylius.order.pending.duration: 3 hours
 
     sylius.uploader.filesystem: sylius_image
+    sylius.filesystem.export: %kernel.root_dir%/../web/media/exported_files
 
     phpcr_backend:
         type: doctrinedbal

@@ -13,11 +13,19 @@ namespace spec\Sylius\Component\ImportExport\Writer;
 
 use PhpSpec\ObjectBehavior;
 
+use Doctrine\ORM\EntityManager;
+use Gaufrette\Filesystem;
+
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
 class CsvWriterSpec extends ObjectBehavior
-{
+{   
+    function let(Filesystem $filesystem)
+    {
+        $this->beConstructedWith($filesystem);
+    }
+    
     function it_is_initializable()
     {
         $this->shouldHaveType('Sylius\Component\ImportExport\Writer\CsvWriter');

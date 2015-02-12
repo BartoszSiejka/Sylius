@@ -14,6 +14,7 @@ namespace Sylius\Bundle\CoreBundle\Import\Writer\ORM;
 use Sylius\Component\ImportExport\Writer\WriterInterface;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
+use Sylius\Component\ImportExport\Model\JobInterface;
 
 /**
  * Export reader.
@@ -53,4 +54,9 @@ abstract class AbstractDoctrineWriter implements WriterInterface
     }
 
     public abstract function process($result);
+
+    public function finalize(JobInterface $job)
+    {
+        
+    }
 }

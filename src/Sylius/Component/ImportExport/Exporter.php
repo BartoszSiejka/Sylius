@@ -40,24 +40,29 @@ class Exporter extends JobRunner implements ExporterInterface
         $exportJob = $this->startJob($exportProfile);
 
         if (null === $readerType = $exportProfile->getReader()) {
-            $this->logger->error(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
+            $this->endJob($exportJob, Job::FAILED);
+            $this->logger->addError(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
             throw new \InvalidArgumentException('Cannot read data with ExportProfile instance without reader defined.');
         }
         if (null === $writerType = $exportProfile->getWriter()) {
-            $this->logger->error(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
+            $this->endJob($exportJob, Job::FAILED);
+            $this->logger->addError(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
             throw new \InvalidArgumentException('Cannot write data with ExportProfile instance without writer defined.');
         }
 
         $reader = $this->readerRegistry->get($readerType);
         $reader->setConfiguration($exportProfile->getReaderConfiguration(), $this->logger);
 
+        $writerConfiguration = $exportProfile->getWriterConfiguration();
         $writer = $this->writerRegistry->get($writerType);
+
         $writer->setConfiguration($exportProfile->getWriterConfiguration(), $this->logger);
 
         foreach ($reader->read() as $data) {
             $writer->write($data);
         }
+        $writer->finalize($exportJob);
 
-        $this->endJob($exportJob);
+        $this->endJob($exportJob, Job::COMPLETED);
     }
 }

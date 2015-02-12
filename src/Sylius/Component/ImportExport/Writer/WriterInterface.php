@@ -12,6 +12,7 @@
 namespace Sylius\Component\ImportExport\Writer;
 
 use Monolog\Logger;
+use Sylius\Component\ImportExport\Model\JobInterface;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -33,4 +34,11 @@ interface WriterInterface
     * @return Type of data
     */
     public function getType();
+
+    /**
+     * Finalize job
+     * 
+     * @param JobInterface $job
+     */
+    public function finalize(JobInterface $job);
 }

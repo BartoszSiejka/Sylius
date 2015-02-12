@@ -13,6 +13,8 @@ namespace Sylius\Component\ImportExport\Writer;
 
 use EasyCSV\Writer;
 use Monolog\Logger;
+use Gaufrette\Filesystem;
+use Sylius\Component\ImportExport\Model\JobInterface;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -49,6 +51,21 @@ class CsvWriter implements WriterInterface
     protected $logger;
 
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
+     * Constructor
+     *
+     * @param Filesystem $filesystem
+     */
+    public function __construct(Filesystem $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    /**
      * @param array $items
      */
     public function write(array $items)
@@ -67,6 +84,16 @@ class CsvWriter implements WriterInterface
         }
 
         $this->csvWriter->writeRow($items);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finalize(JobInterface $job)
+    {
+        $fileName = sprintf('export_%d_%s', $job->getProfile()->getId(), $job->getStartTime()->format('Y_m_d_H_i_s'));
+        $this->filesystem->write($fileName, file_get_contents($this->configuration['file']));
+        $job->setFilePath($fileName);
     }
 
     /**
