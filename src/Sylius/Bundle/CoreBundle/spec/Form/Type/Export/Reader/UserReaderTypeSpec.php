@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class UserReaderTypeSpec extends ObjectBehavior
 {
-
     function it_is_initializable()
     {
         $this->shouldHaveType('Sylius\Bundle\CoreBundle\Form\Type\Export\Reader\UserReaderType');

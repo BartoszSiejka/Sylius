@@ -36,7 +36,7 @@ class ImportExportContext extends DefaultContext
 
         $manager->flush();
     }
-    
+
     private function thereIsExportProfile($name, $description, $code, $reader, $readerConfiguration, $writer, $writerConfiguration, $flush = true)
     {
         $repository = $this->getRepository('export_profile');
@@ -44,7 +44,7 @@ class ImportExportContext extends DefaultContext
         $exportProfile->setName($name);
         $exportProfile->setDescription($description);
         $exportProfile->setCode($code);
-        
+
         $exportProfile->setReader($reader);
         $exportProfile->setReaderConfiguration($this->getConfiguration($readerConfiguration));
 
@@ -60,7 +60,7 @@ class ImportExportContext extends DefaultContext
         if ($flush) {
             $menager->flush();
         }
-        
+
         return $exportProfile;
     }
 
@@ -79,7 +79,7 @@ class ImportExportContext extends DefaultContext
 
         $manager->flush();
     }
-    
+
     private function thereIsImportProfile($name, $description, $code, $reader, $readerConfiguration, $writer, $writerConfiguration, $flush = true)
     {
         $repository = $this->getRepository('import_profile');
@@ -87,7 +87,7 @@ class ImportExportContext extends DefaultContext
         $importProfile->setName($name);
         $importProfile->setDescription($description);
         $importProfile->setCode($code);
-        
+
         $importProfile->setReader($reader);
         $importProfile->setReaderConfiguration($this->getConfiguration($readerConfiguration));
 
@@ -103,7 +103,7 @@ class ImportExportContext extends DefaultContext
         if ($flush) {
             $menager->flush();
         }
-        
+
         return $importProfile;
     }
 }

@@ -11,9 +11,7 @@
 
 namespace Sylius\Component\ImportExport\Writer;
 
-use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
-
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -29,12 +27,11 @@ class XlsWriter implements WriterInterface
      * Work logger
      *
      * @var Logger
-     */    
+     */
     protected $logger;
 
     public function write(array $items)
     {
-        
     }
 
     /**

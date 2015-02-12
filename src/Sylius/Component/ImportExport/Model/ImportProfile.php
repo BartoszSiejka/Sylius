@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class ImportProfile extends Profile implements ImportProfileInterface
 {
-    function __construct() 
+    function __construct()
     {
         $this->reader = 'csv_reader';
         $this->readerConfiguration = array();

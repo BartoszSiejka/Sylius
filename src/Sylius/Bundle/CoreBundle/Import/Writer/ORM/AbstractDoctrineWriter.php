@@ -15,7 +15,6 @@ use Sylius\Component\ImportExport\Writer\WriterInterface;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 
-
 /**
  * Export reader.
  *
@@ -30,24 +29,25 @@ abstract class AbstractDoctrineWriter implements WriterInterface
      * Work logger
      *
      * @var Logger
-     */    
+     */
     protected $logger;
-    
-    public function __construct(EntityManager $em) {
+
+    public function __construct(EntityManager $em)
+    {
         $this->em = $em;
     }
-    
+
     public function write(array $items)
     {
-        foreach ($items as $item) {           
+        foreach ($items as $item) {
             $item = $this->process($item);
             $this->em->persist($item);
         }
-        
+
         $this->em->flush();
     }
 
-    public function setConfiguration (array $configuration, Logger $logger)
+    public function setConfiguration(array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
     }

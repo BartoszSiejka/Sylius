@@ -56,7 +56,7 @@ class JobRunner
      * Logger for importer
      *
      * @var Logger
-     */    
+     */
     protected $logger;
 
     /**
@@ -69,7 +69,7 @@ class JobRunner
      * @var Logger $logger
      */
     public function __construct(
-        ServiceRegistryInterface $readerRegistry, 
+        ServiceRegistryInterface $readerRegistry,
         ServiceRegistryInterface $writerRegistry,
         RepositoryInterface $jobRepository,
         EntityManager $entityManager,
@@ -85,7 +85,7 @@ class JobRunner
     /**
      * Create import job
      *
-     * @param ProfileInterface $profile
+     * @param  ProfileInterface $profile
      * @return JobInterface
      */
     protected function startJob(ProfileInterface $profile)
@@ -107,11 +107,11 @@ class JobRunner
     }
 
     /**
-     * End import job 
+     * End import job
      *
      * @param JobInterface $job
      */
-    protected function endJob(JobInterface $job) 
+    protected function endJob(JobInterface $job)
     {
         $job->setUpdatedAt(new \DateTime());
         $job->setEndTime(new \DateTime());

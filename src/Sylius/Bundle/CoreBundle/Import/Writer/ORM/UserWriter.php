@@ -25,7 +25,7 @@ class UserWriter extends AbstractDoctrineWriter
     private $addressRepository;
     private $countryRepository;
     private $provinceRepository;
-    
+
     public function __construct(RepositoryInterface $userRepository, EntityManager $em, RepositoryInterface $addressRepository, RepositoryInterface $countryRepository, RepositoryInterface $provinceRepository)
     {
         parent::__construct($em);
@@ -34,16 +34,16 @@ class UserWriter extends AbstractDoctrineWriter
         $this->countryRepository = $countryRepository;
         $this->provinceRepository = $provinceRepository;
     }
-    
-    public function process($data) 
+
+    public function process($data)
     {
         $userRepository = $this->userRepository;
 
-        if($userRepository->findOneBy(array('email' => $data['email']))){
+        if ($userRepository->findOneBy(array('email' => $data['email']))) {
             $user = $userRepository->findOneByEmail($data['email']);
             $shippingAddress = $user->getShippingAddress();
             $billingAddress = $user->getBillingAddress();
-            
+
             $data['shipping_address_country'] ? $shippingCountry = $this->countryRepository->findOneByIsoName($data['shipping_address_country']) : $shippingCountry = $shippingAddress->getCountry();
             $data['shipping_address_province'] ? $shippingProvince = $this->provinceRepository->findOneByIsoName($data['shipping_address_province']) : $shippingProvince = $shippingAddress->getProvince();
             $data['billing_address_country'] ? $billingCountry = $this->countryRepository->findOneByIsoName($data['billing_address_country']) : $billingCountry = $billingAddress->getCountry();
@@ -79,7 +79,7 @@ class UserWriter extends AbstractDoctrineWriter
 
             return $user;
         }
-        
+
         $user = $userRepository->createNew();
         $shippingAddress = $this->addressRepository->createNew();
         $billingAddress = $this->addressRepository->createNew();
@@ -87,7 +87,7 @@ class UserWriter extends AbstractDoctrineWriter
         $data['shipping_address_province'] ? $shippingProvince = $this->provinceRepository->findOneByIsoName($data['shipping_address_province']) : $shippingProvince = null;
         $data['billing_address_country'] ? $billingCountry = $this->countryRepository->findOneByIsoName($data['billing_address_country']) : $billingCountry = null;
         $data['billing_address_province'] ? $billingProvince = $this->provinceRepository->findOneByIsoName($data['billing_address_province']) : $billingProvince = null;
-        
+
         $user->setFirstName($data['first_name']);
         $user->setLastName($data['last_name']);
         $user->setEmail($data['email']);
@@ -115,7 +115,7 @@ class UserWriter extends AbstractDoctrineWriter
         $user->setCurrency($data['currency']);
         $user->setPlainPassword($data['password']);
         $user->setCreatedAt(new \DateTime($data['created_at']));
-        
+
         return $user;
     }
 

@@ -16,7 +16,6 @@ use Sylius\Component\Registry\ServiceRegistryInterface;
 use Doctrine\ORM\EntityManager;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\ImportExport\Model\Job;
-use Sylius\Component\ImportExport\Model\JobInterface;
 use Monolog\Logger;
 
 /**
@@ -28,11 +27,12 @@ class Importer extends JobRunner implements ImporterInterface
      * {@inheritdoc}
      */
     public function __construct(
-        ServiceRegistryInterface $readerRegistry, 
+        ServiceRegistryInterface $readerRegistry,
         ServiceRegistryInterface $writerRegistry,
         RepositoryInterface $importJobRepository,
         EntityManager $entityManager,
-        Logger $logger) {
+        Logger $logger)
+    {
         parent::__construct($readerRegistry, $writerRegistry, $importJobRepository, $entityManager, $logger);
     }
 
@@ -57,7 +57,6 @@ class Importer extends JobRunner implements ImporterInterface
 
         $writer = $this->writerRegistry->get($writerType);
         $writer->setConfiguration($importProfile->getWriterConfiguration(), $this->logger);
-
 
         while (null !== ($readedLine = $reader->read())) {
             $writer->write($readedLine);

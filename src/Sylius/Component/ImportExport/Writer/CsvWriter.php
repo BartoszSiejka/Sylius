@@ -11,10 +11,8 @@
 
 namespace Sylius\Component\ImportExport\Writer;
 
-use Doctrine\ORM\EntityManager;
 use EasyCSV\Writer;
 use Monolog\Logger;
-
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -47,7 +45,7 @@ class CsvWriter implements WriterInterface
      * Work logger
      *
      * @var Logger
-     */    
+     */
     protected $logger;
 
     /**
@@ -55,7 +53,6 @@ class CsvWriter implements WriterInterface
      */
     public function write(array $items)
     {
-
         if (!$this->running) {
             $this->csvWriter = new Writer($this->configuration['file'], 'w');
             $this->csvWriter->setDelimiter($this->configuration['delimiter']);

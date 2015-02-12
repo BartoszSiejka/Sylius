@@ -21,17 +21,17 @@ use Doctrine\ORM\EntityRepository;
 class ProductReader extends AbstractDoctrineReader
 {
     private $productRepository;
-    
+
     public function __construct(EntityRepository $productRepository)
     {
         $this->productRepository = $productRepository;
     }
-    
+
     protected function getQuery()
     {
         $query = $this->productRepository->createQueryBuilder('p')
             ->getQuery();
-        
+
         return $query;
     }
 
@@ -42,14 +42,14 @@ class ProductReader extends AbstractDoctrineReader
     {
         return 'product';
     }
-    
+
     public function process($product)
-    {        
+    {
         $archetype = $product->getArchetype();
         $taxCategory = $product->getTaxCategory();
         $shippingCategory = $product->getShippingCategory();
         $createdAt = (string) $product->getCreatedAt()->format('Y-m-d H:m:s');
-        
+
         return array(
             'id' => $product->getId(),
             'name' => $product->getName(),

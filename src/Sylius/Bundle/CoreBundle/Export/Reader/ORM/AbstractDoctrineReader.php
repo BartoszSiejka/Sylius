@@ -28,35 +28,32 @@ abstract class AbstractDoctrineReader implements ReaderInterface
 
     public function read()
     {
-        if (!$this->running)
-        {
-            $this->running =true;
+        if (!$this->running) {
+            $this->running = true;
             $this->results = $this->getQuery()->execute();
             $this->results = new \ArrayIterator($this->results);
             $batchSize = $this->configuration['batch_size'];
         }
-        
+
         $results = array();
 
-        for ($i=0; $i<$batchSize; $i++)
-        {
-            if ($result = $this->results->current())
-            {
+        for ($i = 0; $i<$batchSize; $i++) {
+            if ($result = $this->results->current()) {
                 $this->results->next();
             }
-            
+
             $result = $this->process($result);
             $results[] = $result;
         }
-        
+
         return $results;
     }
 
-    public function setConfiguration (array $configuration, Logger $logger)
+    public function setConfiguration(array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
         $this->logger = $logger;
-    }  
+    }
 
     public abstract function process($result);
 }

@@ -28,7 +28,6 @@ use Sylius\Component\ImportExport\Writer\WriterInterface;
  */
 class ExportProfileTypeSpec extends ObjectBehavior
 {
-
     function let(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry)
     {
         $this->beConstructedWith('Sylius\Component\ImportExport\Model\ExportProfile', array('sylius'), $readerRegistry, $writerRegistry);
@@ -43,7 +42,7 @@ class ExportProfileTypeSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType');
     }
-    
+
     function it_build_form_with_proper_fields(
         FormBuilderInterface $builder,
         FormFactoryInterface $factory,
@@ -77,7 +76,7 @@ class ExportProfileTypeSpec extends ObjectBehavior
         $prototypes = array(
             'readers' => array(
                 'test_reader' => Argument::type('Symfony\Component\Form\Form'),
-            ), 
+            ),
             'writers' => array(
                 'test_writer' => Argument::type('Symfony\Component\Form\Form'),
             ),
@@ -94,22 +93,21 @@ class ExportProfileTypeSpec extends ObjectBehavior
         FormInterface $formUser,
         FormInterface $formCsv
     ) {
-       $prototypes = array(
+        $prototypes = array(
            'reader' => array('table' => $formUser),
            'writer' => array('csv' => $formCsv),
        );
 
-       $config->getAttribute('prototypes')->willReturn($prototypes);
-       $form->getConfig()->willReturn($config);
+        $config->getAttribute('prototypes')->willReturn($prototypes);
+        $form->getConfig()->willReturn($config);
 
-       $formUser->createView($view)->shouldBeCalled();
-       $formCsv->createView($view)->shouldBeCalled();
+        $formUser->createView($view)->shouldBeCalled();
+        $formCsv->createView($view)->shouldBeCalled();
 
-       $this->buildView($view, $form, array());
-
+        $this->buildView($view, $form, array());
     }
     function it_has_name()
     {
-       $this->getName()->shouldReturn('sylius_export_profile');
+        $this->getName()->shouldReturn('sylius_export_profile');
     }
 }

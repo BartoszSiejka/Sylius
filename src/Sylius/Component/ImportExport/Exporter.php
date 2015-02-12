@@ -15,8 +15,6 @@ use Sylius\Component\ImportExport\Model\ExportProfileInterface;
 use Sylius\Component\Registry\ServiceRegistryInterface;
 use Doctrine\ORM\EntityManager;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
-use Sylius\Component\ImportExport\Model\Job;
-use Sylius\Component\ImportExport\Model\JobInterface;
 use Monolog\Logger;
 
 /**
@@ -28,11 +26,12 @@ class Exporter extends JobRunner implements ExporterInterface
      * {@inheritdoc}
      */
     public function __construct(
-        ServiceRegistryInterface $readerRegistry, 
+        ServiceRegistryInterface $readerRegistry,
         ServiceRegistryInterface $writerRegistry,
         RepositoryInterface $exportJobRepository,
         EntityManager $entityManager,
-        Logger $logger) {
+        Logger $logger)
+    {
         parent::__construct($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager, $logger);
     }
 

@@ -18,6 +18,5 @@ class ExportProfileController extends ResourceController
 {
     public function exportAction(Request $request)
     {
-            
     }
 }

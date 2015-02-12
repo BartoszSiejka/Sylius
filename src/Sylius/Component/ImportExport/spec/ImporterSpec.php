@@ -42,7 +42,7 @@ class ImporterSpec extends ObjectBehavior
     }
 
     // function it_imports_data_with_given_importer(
-    //     $importJobRepository, 
+    //     $importJobRepository,
     //     $logger,
     //     $readerRegistry,
     //     $writerRegistry,
@@ -90,7 +90,7 @@ class ImporterSpec extends ObjectBehavior
     // }
 
     // function it_does_not_allow_to_import_data_without_reader_defined(
-    //     $importJobRepository, 
+    //     $importJobRepository,
     //     $logger,
     //     ImportJobInterface $importJob,
     //     ImportProfileInterface $importProfile)
