@@ -22,9 +22,6 @@
         <parameter key="sylius.import_export.exporter.class">Sylius\Component\ImportExport\Exporter</parameter>
         <parameter key="sylius.form.type.export_writer_choice.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\ExportWriterChoiceType</parameter>
         <parameter key="sylius.form.type.export_reader_choice.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ExportReaderChoiceType</parameter>
-
-        <parameter key="sylius.form.type.reader.product_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductReaderType</parameter>
-        <parameter key="sylius.form.type.reader.user_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\UserReaderType</parameter>
         <parameter key="sylius.form.type.reader.csv.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\csvReaderType</parameter>
 
         <parameter key="sylius.form.type.writer.csv_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\CsvWriterType</parameter>
@@ -38,7 +35,6 @@
         <parameter key="sylius.export.xls_writer.class">Sylius\Component\ImportExport\Writer\XlsWriter</parameter>
 
         <parameter key="sylius.import.csv_reader.class">Sylius\Component\ImportExport\Reader\CsvReader</parameter>
-        <parameter key="sylius.form.type.writer.product_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\ProductWriterType</parameter>
     </parameters>
 
     <services>
@@ -88,13 +84,6 @@
             <argument>%sylius.export.readers%</argument>
             <tag name="form.type" alias="sylius_export_reader_choice" />
         </service>
-
-        <service id="sylius.form.type.reader.product_type" class="%sylius.form.type.reader.product_type.class%">
-            <tag name="form.type" alias="sylius_product_reader" />
-        </service>
-        <service id="sylius.form.type.reader.user_type" class="%sylius.form.type.reader.user_type.class%">
-            <tag name="form.type" alias="sylius_user_reader" />
-        </service>
         
         <!-- Import Config -->
         
@@ -123,9 +112,6 @@
             <tag name="form.type" alias="sylius_csv_reader" />
         </service>
 
-        <service id="sylius.form.type.writer.product_type" class="%sylius.form.type.writer.product_type.class%">
-            <tag name="form.type" alias="sylius_product_writer" />
-        </service>
     </services>
 
 </container>

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sylius\Bundle\ImportExportBundle\Form\Type\Reader;
+namespace Sylius\Bundle\CoreBundle\Form\Type\Export\Reader;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,7 +19,7 @@ use Symfony\Component\Form\FormBuilderInterface;
  *
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
-class UserReaderType extends AbstractType
+class ProductReaderType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -39,6 +39,6 @@ class UserReaderType extends AbstractType
      */
     public function getName()
     {
-        return 'sylius_user_reader';
+        return 'sylius_product_reader';
     }
 }

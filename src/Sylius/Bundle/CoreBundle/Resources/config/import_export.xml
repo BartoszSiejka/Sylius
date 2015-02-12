@@ -16,11 +16,18 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services
                                http://symfony.com/schema/dic/services/services-1.0.xsd"> 
     <parameters>    
+        <!-- Readers -->
         <parameter key="sylius.export.user_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\UserReader</parameter>
         <parameter key="sylius.export.product_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\ProductReader</parameter>
 
+        <parameter key="sylius.form.type.reader.product_type.class">Sylius\Bundle\CoreBundle\Form\Type\Export\Reader\ProductReaderType</parameter>
+        <parameter key="sylius.form.type.reader.user_type.class">Sylius\Bundle\CoreBundle\Form\Type\Export\Reader\UserReaderType</parameter>
+
+        <!-- Writers -->
         <parameter key="sylius.import.user_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\UserWriter</parameter>
         <parameter key="sylius.import.product_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\ProductWriter</parameter>
+
+        <parameter key="sylius.form.type.writer.product_type.class">Sylius\Bundle\CoreBundle\Form\Type\Import\Writer\ProductWriterType</parameter>
     </parameters>
 
     <services>
@@ -32,6 +39,13 @@
         <service id="sylius.export.product_reader" class="%sylius.export.product_reader.class%">
             <argument type="service" id="sylius.repository.product" />
             <tag name="sylius.export.reader" reader="product_reader" label="Product reader" />
+        </service>
+
+        <service id="sylius.form.type.reader.product_type" class="%sylius.form.type.reader.product_type.class%">
+            <tag name="form.type" alias="sylius_product_reader" />
+        </service>
+        <service id="sylius.form.type.reader.user_type" class="%sylius.form.type.reader.user_type.class%">
+            <tag name="form.type" alias="sylius_user_reader" />
         </service>
 
         <!-- Import writer -->
@@ -50,6 +64,9 @@
             <argument type="service" id="sylius.repository.country" />
             <argument type="service" id="sylius.repository.province" />
             <tag name="sylius.import.writer" writer="user_writer" label="User writer" />
+        </service>
+        <service id="sylius.form.type.writer.product_type" class="%sylius.form.type.writer.product_type.class%">
+            <tag name="form.type" alias="sylius_product_writer" />
         </service>
     </services>
 </container>
