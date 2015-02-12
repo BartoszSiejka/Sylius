@@ -19,7 +19,6 @@ use Sylius\Component\ImportExport\Reader\ReaderInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\ImportExport\Model\ExportJobInterface;
 use Doctrine\ORM\EntityManager;
-use Gaufrette\Filesystem;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -28,9 +27,9 @@ use Monolog\Handler\StreamHandler;
  */
 class ExporterSpec extends ObjectBehavior
 {
-    function let(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry, RepositoryInterface $exportJobRepository, EntityManager $entityManager, Filesystem $filesystem, Logger $logger)
+    function let(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry, RepositoryInterface $exportJobRepository, EntityManager $entityManager, Logger $logger)
     {
-        $this->beConstructedWith($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager, $filesystem, $logger);
+        $this->beConstructedWith($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager, $logger);
     }
 
     function it_is_initializable()
@@ -81,6 +80,7 @@ class ExporterSpec extends ObjectBehavior
         $writer->setConfiguration(array(), $logger)->shouldBeCalled();
 
         $writer->write(array('readData'))->shouldBeCalled();
+        $writer->finalize($exportJob)->shouldBeCalled();
 
         $endTime = new \DateTime();
         $exportJob->setUpdatedAt($endTime)->shouldBeCalled()->willReturn($exportJob);

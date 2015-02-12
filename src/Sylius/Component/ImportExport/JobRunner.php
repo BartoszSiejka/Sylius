@@ -114,11 +114,11 @@ class JobRunner
      *
      * @param JobInterface $job
      */
-    protected function endJob(JobInterface $job) 
+    protected function endJob(JobInterface $job, $status) 
     {
         $job->setUpdatedAt(new \DateTime());
         $job->setEndTime(new \DateTime());
-        $job->setStatus(Job::COMPLETED);
+        $job->setStatus($status);
         $this->logger->addInfo(sprintf("Job: %d; EndTime: %s", $job->getId(), $job->getEndTime()->format('Y-m-d H:i:s')));
 
         $this->entityManager->persist($job);

@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityManager;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\ImportExport\Model\Job;
 use Sylius\Component\ImportExport\Model\JobInterface;
-use Gaufrette\Filesystem;
 use Monolog\Logger;
 
 /**
@@ -26,11 +25,6 @@ use Monolog\Logger;
 class Exporter extends JobRunner implements ExporterInterface
 {
     /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
      * {@inheritdoc}
      */
     public function __construct(
@@ -38,10 +32,8 @@ class Exporter extends JobRunner implements ExporterInterface
         ServiceRegistryInterface $writerRegistry,
         RepositoryInterface $exportJobRepository,
         EntityManager $entityManager,
-        Filesystem $filesystem,
         Logger $logger) {
         parent::__construct($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager, $logger);
-        $this->filesystem = $filesystem;
     }
 
     public function export(ExportProfileInterface $exportProfile)
@@ -49,10 +41,12 @@ class Exporter extends JobRunner implements ExporterInterface
         $exportJob = $this->startJob($exportProfile);
 
         if (null === $readerType = $exportProfile->getReader()) {
+            $this->endJob($exportJob, Job::FAILED);
             $this->logger->addError(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
             throw new \InvalidArgumentException('Cannot read data with ExportProfile instance without reader defined.');
         }
         if (null === $writerType = $exportProfile->getWriter()) {
+            $this->endJob($exportJob, Job::FAILED);
             $this->logger->addError(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
             throw new \InvalidArgumentException('Cannot write data with ExportProfile instance without writer defined.');
         }
@@ -68,10 +62,8 @@ class Exporter extends JobRunner implements ExporterInterface
         foreach ($reader->read() as $data) {
             $writer->write($data);
         }
+        $writer->finalize($exportJob);
 
-        // $file = $this->filesystem->read($writerConfiguration["file"]);
-        // $this->filesystem->write(sprintf('export_%d_%s', $exportProfile->getId(), $exportJob->getStartTime()->format('Y-m-d H:i:s')));
-
-        $this->endJob($exportJob);
+        $this->endJob($exportJob, Job::COMPLETED);
     }
 }

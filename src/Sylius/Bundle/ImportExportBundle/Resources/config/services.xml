@@ -64,7 +64,6 @@
             <argument type="service" id="sylius.registry.export.writer" />
             <argument type="service" id="sylius.repository.export_job" />
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="exporter_filesystem" />
             <argument type="service" id="logger" />
             <tag name="monolog.logger" channel="exporter" />
         </service>
@@ -78,6 +77,7 @@
         </service>
 
         <service id="sylius.export.csv_writer" class="%sylius.export.csv_writer.class%">
+            <argument type="service" id="exporter_filesystem" />
             <tag name="sylius.export.writer" writer="csv_writer" label="CSV writer" />
         </service>
         <service id="sylius.form.type.writer.csv_type" class="%sylius.form.type.writer.csv_type.class%">
