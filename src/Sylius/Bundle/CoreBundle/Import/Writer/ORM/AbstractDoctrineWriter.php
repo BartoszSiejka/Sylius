@@ -65,6 +65,7 @@ abstract class AbstractDoctrineWriter implements WriterInterface
      */
     public function finalize(JobInterface $job)
     {
+        $job->addMetadata('result_code',$this->resultCode);
     }
 
     /**

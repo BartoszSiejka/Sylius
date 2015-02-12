@@ -89,6 +89,7 @@ class CsvReader implements ReaderInterface
 
     public function finalize(JobInterface $job)
     {
+        $job->addMetadata('result_code',$this->resultCode);
     }
 
     /**

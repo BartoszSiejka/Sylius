@@ -56,6 +56,7 @@ class Exporter extends JobRunner implements ExporterInterface
         }
 
         $writer->finalize($exportJob);
+        $reader->finalize($exportJob);
 
         $jobStatus = Job::COMPLETED;
 
