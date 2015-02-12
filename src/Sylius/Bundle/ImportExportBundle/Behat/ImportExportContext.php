@@ -89,7 +89,7 @@ class ImportExportContext extends DefaultContext
         $exportJob->setUpdatedAt(new \DateTime($updatedAt));
         
         $exportProfile = $this->getRepository('export_profile')->findOneByCode($exportProfileCode);
-        $exportJob->setExportProfile($exportProfile);
+        $exportJob->setProfile($exportProfile);
 
         $manager = $this->getEntityManager();
         $manager->persist($exportJob);
