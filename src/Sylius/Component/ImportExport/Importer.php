@@ -44,10 +44,12 @@ class Importer extends JobRunner implements ImporterInterface
         $job = $this->startJob($importProfile);
 
         if (null === $readerType = $importProfile->getReader()) {
+            $this->endJob($exportJob, Job::FAILED);
             $this->logger->addError(sprintf('ImportProfile: %d. Cannot read data with ImportProfile instance without reader defined.', $importProfile->getId()));
             throw new \InvalidArgumentException('Cannot read data with ImportProfile instance without reader defined.');
         }
         if (null === $writerType = $importProfile->getWriter()) {
+            $this->endJob($exportJob, Job::FAILED);
             $this->logger->addError(sprintf('ImportProfile: %d. Cannot read data with ImportProfile instance without reader defined.', $importProfile->getId()));
             throw new \InvalidArgumentException('Cannot write data with ImportProfile instance without writer defined.');
         }
@@ -62,6 +64,14 @@ class Importer extends JobRunner implements ImporterInterface
             $writer->write($readedLine);
         }
 
-        $this->endJob($job);
+        $writer->finalize($exportJob);
+
+        $jobStatus = Job::COMPLETED;
+
+        if ($reader->getResultCode() !== 0 || $writer->getResultCode() !== 0) {
+            $jobStatus = ($reader->getResultCode() < 0 || $writer->getResultCode() < 0) ? Job::FAILED : Job::ERROR;
+        }
+
+        $this->endJob($exportJob, $jobStatus);
     }
 }

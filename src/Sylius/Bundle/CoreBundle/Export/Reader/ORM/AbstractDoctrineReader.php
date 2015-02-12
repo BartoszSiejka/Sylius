@@ -11,8 +11,9 @@
 
 namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
-use Sylius\Component\ImportExport\Reader\ReaderInterface;
 use Monolog\Logger;
+use Sylius\Component\ImportExport\Model\JobInterface;
+use Sylius\Component\ImportExport\Reader\ReaderInterface;
 
 /**
  * Export reader.
@@ -25,6 +26,11 @@ abstract class AbstractDoctrineReader implements ReaderInterface
     private $running = false;
     private $configuration;
     private $logger;
+    
+    /**
+     * @var int
+     */
+    private $resultCode = 0;
 
     public function read()
     {
@@ -56,4 +62,19 @@ abstract class AbstractDoctrineReader implements ReaderInterface
     }
 
     public abstract function process($result);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finalize(JobInterface $job)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultCode()
+    {
+        return $this->resultCode;
+    }
 }

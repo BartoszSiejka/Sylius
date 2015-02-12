@@ -33,6 +33,11 @@ abstract class AbstractDoctrineWriter implements WriterInterface
      */
     protected $logger;
 
+    /**
+     * @var int
+     */
+    private $resultCode = 0;
+
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -55,8 +60,18 @@ abstract class AbstractDoctrineWriter implements WriterInterface
 
     public abstract function process($result);
 
+    /**
+     * {@inheritdoc}
+     */
     public function finalize(JobInterface $job)
     {
-        
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultCode()
+    {
+        return $this->resultCode;
     }
 }

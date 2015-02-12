@@ -56,6 +56,11 @@ class CsvWriter implements WriterInterface
     private $filesystem;
 
     /**
+     * @var int
+     */
+    private $returnCode = 0;
+
+    /**
      * Constructor
      *
      * @param Filesystem $filesystem
@@ -94,6 +99,14 @@ class CsvWriter implements WriterInterface
         $fileName = sprintf('export_%d_%s', $job->getProfile()->getId(), $job->getStartTime()->format('Y_m_d_H_i_s'));
         $this->filesystem->write($fileName, file_get_contents($this->configuration['file']));
         $job->setFilePath($fileName);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultCode()
+    {
+        return $this->resultCode;
     }
 
     /**

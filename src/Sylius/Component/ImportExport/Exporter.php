@@ -11,11 +11,12 @@
 
 namespace Sylius\Component\ImportExport;
 
-use Sylius\Component\ImportExport\Model\ExportProfileInterface;
-use Sylius\Component\Registry\ServiceRegistryInterface;
 use Doctrine\ORM\EntityManager;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Monolog\Logger;
+use Sylius\Component\ImportExport\Model\ExportProfileInterface;
+use Sylius\Component\ImportExport\Model\Job;
+use Sylius\Component\Registry\ServiceRegistryInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -53,16 +54,21 @@ class Exporter extends JobRunner implements ExporterInterface
         $reader = $this->readerRegistry->get($readerType);
         $reader->setConfiguration($exportProfile->getReaderConfiguration(), $this->logger);
 
-        $writerConfiguration = $exportProfile->getWriterConfiguration();
         $writer = $this->writerRegistry->get($writerType);
-
         $writer->setConfiguration($exportProfile->getWriterConfiguration(), $this->logger);
 
         foreach ($reader->read() as $data) {
             $writer->write($data);
         }
+
         $writer->finalize($exportJob);
 
-        $this->endJob($exportJob, Job::COMPLETED);
+        $jobStatus = Job::COMPLETED;
+
+        if ($reader->getResultCode() !== 0 || $writer->getResultCode() !== 0) {
+            $jobStatus = ($reader->getResultCode() < 0 || $writer->getResultCode() < 0) ? Job::FAILED : Job::ERROR;
+        }
+
+        $this->endJob($exportJob, $jobStatus);
     }
 }

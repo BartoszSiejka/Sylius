@@ -13,6 +13,7 @@ namespace Sylius\Component\ImportExport\Reader;
 
 use EasyCSV\Reader;
 use Monolog\Logger;
+use Sylius\Component\ImportExport\Model\JobInterface;
 
 /**
  * Csv import reader
@@ -44,6 +45,11 @@ class CsvReader implements ReaderInterface
      * @var Logger
      */
     protected $logger;
+    
+    /**
+     * @var int
+     */
+    private $resultCode = 0;
 
     /**
      * {@inheritdoc}
@@ -79,6 +85,18 @@ class CsvReader implements ReaderInterface
     {
         $this->configuration = $configuration;
         $this->logger = $logger;
+    }
+
+    public function finalize(JobInterface $job)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultCode()
+    {
+        return $this->resultCode;
     }
 
     /**
