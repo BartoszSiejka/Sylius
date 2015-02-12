@@ -96,7 +96,7 @@ class CsvWriter implements WriterInterface
      */
     public function finalize(JobInterface $job)
     {
-        $fileName = sprintf('export_%d_%s', $job->getProfile()->getId(), $job->getStartTime()->format('Y_m_d_H_i_s'));
+        $fileName = sprintf('export_%d_%s.csv', $job->getProfile()->getId(), $job->getStartTime()->format('Y_m_d_H_i_s'));
         $this->filesystem->write($fileName, file_get_contents($this->configuration['file']));
         $job->setFilePath($fileName);
     }

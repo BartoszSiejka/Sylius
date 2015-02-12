@@ -36,25 +36,19 @@ class Exporter extends JobRunner implements ExporterInterface
         parent::__construct($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager, $logger);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function export(ExportProfileInterface $exportProfile)
     {
         $exportJob = $this->startJob($exportProfile);
 
-        if (null === $readerType = $exportProfile->getReader()) {
-            $this->endJob($exportJob, Job::FAILED);
-            $this->logger->addError(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
-            throw new \InvalidArgumentException('Cannot read data with ExportProfile instance without reader defined.');
-        }
-        if (null === $writerType = $exportProfile->getWriter()) {
-            $this->endJob($exportJob, Job::FAILED);
-            $this->logger->addError(sprintf('ExportProfile: %d. Cannot read data with ExportProfile instance without reader defined.', $exportProfile->getId()));
-            throw new \InvalidArgumentException('Cannot write data with ExportProfile instance without writer defined.');
-        }
+        $this->validate($exportJob, $exportProfile);
 
-        $reader = $this->readerRegistry->get($readerType);
+        $reader = $this->readerRegistry->get($exportProfile->getReader());
         $reader->setConfiguration($exportProfile->getReaderConfiguration(), $this->logger);
 
-        $writer = $this->writerRegistry->get($writerType);
+        $writer = $this->writerRegistry->get($exportProfile->getWriter());
         $writer->setConfiguration($exportProfile->getWriterConfiguration(), $this->logger);
 
         foreach ($reader->read() as $data) {
@@ -70,5 +64,27 @@ class Exporter extends JobRunner implements ExporterInterface
         }
 
         $this->endJob($exportJob, $jobStatus);
+    }
+
+    private function validate($exportJob, $exportProfile)
+    {
+        if (null === $exportProfile->getReader()) {
+            $this->generateErrorAction($exportJob, $exportProfile->getId(), 'read');
+        }
+        if (null === $exportProfile->getWriter()) {
+            $this->generateErrorAction($exportJob, $exportProfile->getId(), 'write');
+        }
+    }
+
+    private function generateErrorAction($exportJob, $exportProfileId, $type)
+    {
+        $this->endJob($exportJob, Job::FAILED);
+        $this->logger->addError(sprintf('ExportProfile: %d. %s', $exportProfileId, $this->generateErrorMessage($type)));
+        throw new \InvalidArgumentException($this->generateErrorMessage($type));
+    }
+
+    private function generateErrorMessage($type)
+    {
+        return sprintf('Cannot %s data with ExportProfile instance without %s defined.', $type, ($type == 'read') ? 'reader' : 'writer');
     }
 }

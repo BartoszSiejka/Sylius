@@ -279,4 +279,12 @@ abstract class Job implements JobInterface
 
         return $this;
     }
+    
+    /**
+     * Adds metadata to array
+     */
+    public function addMetadata($key,$data)
+    {
+        $this->metadata[$key] = $data;
+    }
 }
