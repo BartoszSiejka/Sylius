@@ -59,8 +59,8 @@ class Importer extends JobRunner implements ImporterInterface
         $writer->setConfiguration($importProfile->getWriterConfiguration(), $this->logger);
 
 
-        while (null !== ($readedLine = $reader->read())) {
-            $writer->write($readedLine);
+        while (null !== ($readLine = $reader->read())) {
+            $writer->write($readLine);
         }
 
         $this->endJob($job);

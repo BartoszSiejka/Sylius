@@ -71,7 +71,6 @@ class CsvWriter implements WriterInterface
      */
     public function write(array $items)
     {
-
         if (!$this->running) {
             $this->csvWriter = new Writer($this->configuration['file'], 'w');
             $this->csvWriter->setDelimiter($this->configuration['delimiter']);
@@ -85,7 +84,7 @@ class CsvWriter implements WriterInterface
             $this->isHeaderSet = true;
         }
 
-        $this->csvWriter->writeRow($items);
+        $this->csvWriter->writeFromArray($items);
     }
 
     /**
