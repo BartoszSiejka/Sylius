@@ -23,15 +23,13 @@ use Sylius\Component\Core\Model\TaxonInterface;
 class TaxonomyReader implements ReaderInterface {
 
     private $taxonomyRepository;
-    private $taxonRepository;
     private $results;
     private $configuration;
     private $running = false;
 
-    public function __construct(RepositoryInterface $taxonomyRepository, RepositoryInterface $taxonRepository) 
+    public function __construct(RepositoryInterface $taxonomyRepository) 
     {
         $this->taxonomyRepository = $taxonomyRepository;
-        $this->taxonRepository = $taxonRepository;
     }
 
     public function read() 
@@ -57,13 +55,13 @@ class TaxonomyReader implements ReaderInterface {
                 'taxonomy_id'      => $taxon->getTaxonomy()->getId(),
                 'taxonomy_name'    => $taxon->getTaxonomy(),
                 'root_id'          => $taxon->getTaxonomy()->getRoot()->getId(),
-                'root_name'        => $taxon->getTaxonomy()->getRoot()->getId(),
-                'root_slug'        => $taxon->getTaxonomy()->getRoot()->getId(),
-                'root_permalink'   => $taxon->getTaxonomy()->getRoot()->getId(),
-                'root_description' => $taxon->getTaxonomy()->getRoot()->getId(),
-                'root_left_tree'   => $taxon->getLeft(),
-                'root_right_tree'  => $taxon->getRight(),
-                'root_tree_level'  => $taxon->getLevel(),
+                'root_name'        => $taxon->getTaxonomy()->getRoot()->getName(),
+                'root_slug'        => $taxon->getTaxonomy()->getRoot()->getSlug(),
+                'root_permalink'   => $taxon->getTaxonomy()->getRoot()->getPermalink(),
+                'root_description' => $taxon->getTaxonomy()->getRoot()->getDescription(),
+                'root_left_tree'   => $taxon->getTaxonomy()->getRoot()->getLeft(),
+                'root_right_tree'  => $taxon->getTaxonomy()->getRoot()->getRight(),
+                'root_tree_level'  => $taxon->getTaxonomy()->getRoot()->getLevel(),
                 'id'               => $taxon->getId(),
                 'name'             => $taxon->getName(),
                 'slug'             => $taxon->getSlug(),
@@ -73,7 +71,7 @@ class TaxonomyReader implements ReaderInterface {
                 'right_tree'       => $taxon->getRight(),
                 'tree_level'       => $taxon->getLevel(),
                 'parent_id'        => $taxon->getParent()->getId(),
-                'parent_name'      => $taxon->getName(),
+                'parent_name'      => $taxon->getParent()->getName(),
             );
         }
            

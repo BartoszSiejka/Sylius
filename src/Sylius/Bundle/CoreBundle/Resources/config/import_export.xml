@@ -26,6 +26,7 @@
         <parameter key="sylius.import.product_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\ProductWriter</parameter>
         <parameter key="sylius.import.product_attribute_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\ProductAttributeWriter</parameter>
         <parameter key="sylius.import.product_option_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\ProductOptionWriter</parameter>
+        <parameter key="sylius.import.taxonomy_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\TaxonomyWriter</parameter>
     </parameters>
 
     <services>
@@ -48,7 +49,6 @@
         </service>
         <service id="sylius.export.taxonomy_reader" class="%sylius.export.taxonomy_reader.class%">
             <argument type="service" id="sylius.repository.taxonomy" />
-            <argument type="service" id="sylius.repository.taxon" />
             <tag name="sylius.export.reader" reader="taxonomy_reader" label="Taxonomy reader" />
         </service>
 
@@ -67,6 +67,12 @@
             <argument type="service" id="sylius.repository.product_option" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <tag name="sylius.import.writer" writer="product_option_writer" label="Product option writer" />
+        </service>
+        <service id="sylius.import.taxonomy_writer" class="%sylius.import.taxonomy_writer.class%">
+            <argument type="service" id="sylius.repository.taxonomy" />
+            <argument type="service" id="sylius.repository.taxon" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <tag name="sylius.import.writer" writer="taxonomy_writer" label="Taxonomy writer" />
         </service>
         <service id="sylius.import.user_writer" class="%sylius.import.user_writer.class%">
             <argument type="service" id="sylius.repository.user" />

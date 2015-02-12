@@ -29,7 +29,6 @@ class ProductOptionReader extends AbstractDoctrineReader
     
     public function process($option)
     {
-        var_dump($option->getId());
         $createdAt = (string) $option->getCreatedAt()->format('Y-m-d H:m:s');
         
         return array(

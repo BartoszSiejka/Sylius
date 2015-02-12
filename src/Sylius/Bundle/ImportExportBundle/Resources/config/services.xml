@@ -26,6 +26,8 @@
         <parameter key="sylius.form.type.reader.product_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductReaderType</parameter>
         <parameter key="sylius.form.type.reader.taxonomy_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\TaxonomyReaderType</parameter>
         <parameter key="sylius.form.type.reader.user_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\UserReaderType</parameter>
+        <parameter key="sylius.form.type.reader.product_option_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductOptionType</parameter>
+        <parameter key="sylius.form.type.reader.product_attribute_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductAttributeType</parameter>
         <parameter key="sylius.form.type.reader.csv.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\csvReaderType</parameter>
 
         <parameter key="sylius.form.type.writer.csv_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\CsvWriterType</parameter>
@@ -94,6 +96,12 @@
         </service>
         <service id="sylius.form.type.reader.user_type" class="%sylius.form.type.reader.user_type.class%">
             <tag name="form.type" alias="sylius_user_reader" />
+        </service>
+        <service id="sylius.form.type.reader.product_option_type" class="%sylius.form.type.reader.product_option_type.class%">
+            <tag name="form.type" alias="sylius_product_option_reader" />
+        </service>
+        <service id="sylius.form.type.reader.product_attribute_type" class="%sylius.form.type.reader.product_attribute_type.class%">
+            <tag name="form.type" alias="sylius_product_attribute_reader" />
         </service>
         
         <!-- Import Config -->
