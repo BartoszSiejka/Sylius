@@ -27,6 +27,9 @@ Sylius\Component\ImportExport\Model\ExportJob:
         metadata:
             expose: true
             type: array
+        filePath:
+            expose: true
+            type: string
     relations:
         - rel: self
           href:
