@@ -32,20 +32,32 @@ abstract class AbstractDoctrineReader implements ReaderInterface
      */
     private $resultCode = 0;
 
+    /**
+     * Batch size
+     *
+     * @var integer
+     */
+    private $batchSize;
+
     public function read()
     {
         if (!$this->running) {
             $this->running = true;
-            $this->results = $this->getQuery()->execute();
-            $this->results = new \ArrayIterator($this->results);
+            $this->results = new \ArrayIterator($this->getQuery()->execute());
             $batchSize = $this->configuration['batch_size'];
             $this->metadatas['row'] = 0;
         }
 
         $results = array();
 
-        for ($i = 0; $i<$batchSize; $i++) {
-            if ($result = $this->results->current()) {
+        for ($i=0; $i<$this->batchSize; $i++)
+        {
+            if (false === $this->results->valid()) {
+                return empty($results) ? null : $results;    
+            }
+
+            if ($result = $this->results->current())
+            {
                 $this->results->next();
             }
 

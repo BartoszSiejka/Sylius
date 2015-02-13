@@ -94,7 +94,7 @@ class CsvWriter implements WriterInterface
             $this->isHeaderSet = true;
         }
 
-        $this->csvWriter->writeRow($items);
+        $this->csvWriter->writeFromArray($items);
         $this->metadatas['row']++;
     }
 

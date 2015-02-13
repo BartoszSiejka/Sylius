@@ -51,8 +51,8 @@ class Exporter extends JobRunner implements ExporterInterface
         $writer = $this->writerRegistry->get($exportProfile->getWriter());
         $writer->setConfiguration($exportProfile->getWriterConfiguration(), $this->logger);
 
-        foreach ($reader->read() as $data) {
-            $writer->write($data);
+        while (null !== ($readLine = $reader->read())) {
+            $writer->write($readLine);
         }
 
         $writer->finalize($exportJob);
