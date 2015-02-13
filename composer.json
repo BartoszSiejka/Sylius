@@ -65,6 +65,7 @@
         "symfony/intl":                         "~2.3",
         "symfony/monolog-bundle":               "~2.3",
         "symfony/options-resolver":             "~2.3",
+        "symfony/process":                      "2.7.x-dev",
         "symfony/property-access":              "~2.3",
         "symfony/swiftmailer-bundle":           "~2.3",
         "symfony/symfony":                      "~2.3",

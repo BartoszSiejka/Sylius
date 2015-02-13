@@ -330,6 +330,7 @@ sylius:
         updated_at: Last update
         general_info: General info
         show: Show export profile
+        export: Export
     export_job:
         index_header: Jobs
         general_info: General info
@@ -342,6 +343,7 @@ sylius:
         end_time: End time
         created_at: Created at
         updated_at: Updated at
+        no_results: There are no jobs to display.
     filter: Filter
     form:
         cart:
