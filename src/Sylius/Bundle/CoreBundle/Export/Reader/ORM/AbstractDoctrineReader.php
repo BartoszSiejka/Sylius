@@ -11,6 +11,8 @@
 
 namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
+use Monolog\Logger;
+use Sylius\Component\ImportExport\Model\JobInterface;
 use Sylius\Component\ImportExport\Reader\ReaderInterface;
 
 /**
@@ -23,37 +25,72 @@ abstract class AbstractDoctrineReader implements ReaderInterface
     private $results;
     private $running = false;
     private $configuration;
+    private $logger;
     
+    /**
+     * @var int
+     */
+    private $resultCode = 0;
+
+    /**
+     * Batch size
+     *
+     * @var integer
+     */
+    private $batchSize;
+
     public function read()
     {
-        if (!$this->running)
-        {
-            $this->running =true;
-            $this->results = $this->getQuery()->execute();
-            $this->results = new \ArrayIterator($this->results);
+        if (!$this->running) {
+            $this->running = true;
+            $this->results = new \ArrayIterator($this->getQuery()->execute());
             $batchSize = $this->configuration['batch_size'];
+            $this->metadatas['row'] = 0;
         }
-        
+
         $results = array();
 
-        for ($i=0; $i<$batchSize; $i++)
+        for ($i=0; $i<$this->batchSize; $i++)
         {
+            if (false === $this->results->valid()) {
+                return empty($results) ? null : $results;    
+            }
+
             if ($result = $this->results->current())
             {
                 $this->results->next();
             }
-            
+
             $result = $this->process($result);
             $results[] = $result;
+            $this->metadatas['row']++;
         }
-        
+
         return $results;
     }
 
-    public function setConfiguration (array $configuration)
+    public function setConfiguration(array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
-    }  
+        $this->logger = $logger;
+    }
 
     public abstract function process($result);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finalize(JobInterface $job)
+    {
+        $this->metadatas['result_code'] = $this->resultCode;
+        $job->addMetadata('reader',$this->metadatas);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultCode()
+    {
+        return $this->resultCode;
+    }
 }

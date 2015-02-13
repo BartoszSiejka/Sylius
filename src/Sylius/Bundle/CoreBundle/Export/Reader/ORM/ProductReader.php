@@ -21,17 +21,17 @@ use Doctrine\ORM\EntityRepository;
 class ProductReader extends AbstractDoctrineReader
 {
     private $productRepository;
-    
+
     public function __construct(EntityRepository $productRepository)
     {
         $this->productRepository = $productRepository;
     }
-    
+
     protected function getQuery()
     {
         $query = $this->productRepository->createQueryBuilder('p')
             ->getQuery();
-        
+
         return $query;
     }
 
@@ -42,14 +42,14 @@ class ProductReader extends AbstractDoctrineReader
     {
         return 'product';
     }
-    
+
     public function process($product)
-    {        
+    {
         $archetype = $product->getArchetype();
         $taxCategory = $product->getTaxCategory();
         $shippingCategory = $product->getShippingCategory();
         $createdAt = (string) $product->getCreatedAt()->format('Y-m-d H:m:s');
-        
+
         return array(
             'id' => $product->getId(),
             'name' => $product->getName(),
@@ -58,8 +58,8 @@ class ProductReader extends AbstractDoctrineReader
             'short_description' => $product->getShortDescription(),
             'archetype' => $archetype ? $archetype->getCode() : null,
             'tax_category' => $taxCategory ? $taxCategory->getName() : null,
-            'shipping_category' => $shippingCategory ? $shippingCategory->getName() :null,
-            'is_available_on' => $product->isAvailable(),
+            'shipping_category' => $shippingCategory ? $shippingCategory->getId() : null,
+            'is_available_on' => (string) $product->getAvailableOn()->format('Y-m-d H:m:s'),
             'meta_keywords' => $product->getMetaKeywords(),
             'meta_description' => $product->getMetaDescription(),
             'createdAt' => $createdAt,

@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class XlsWriterTypeSpec extends ObjectBehavior
 {
-
     function it_is_initializable()
     {
         $this->shouldHaveType('Sylius\Bundle\ImportExportBundle\Form\Type\Reader\XlsWriterType');
@@ -28,10 +27,6 @@ class XlsWriterTypeSpec extends ObjectBehavior
 
     function it_builds_form_with_proper_fields(FormBuilderInterface $builder)
     {
-        $builder
-            ->add('add_header', 'checkbox', Argument::type('array'))
-            ->willReturn($builder)
-        ;
         $builder
             ->add('file', 'text', Argument::type('array'))
             ->willReturn($builder)

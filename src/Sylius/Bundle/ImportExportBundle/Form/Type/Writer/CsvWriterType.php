@@ -13,6 +13,8 @@ namespace Sylius\Bundle\ImportExportBundle\Form\Type\Writer;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Csv writer type
@@ -28,18 +30,25 @@ class CsvWriterType extends AbstractType
     {
         $builder
             ->add('delimiter', 'text', array(
-                'label'    => 'sylius.form.writer.csv.delimiter',
+                'label'       => 'sylius.form.writer.csv.delimiter',
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('sylius'))),
+                    new Length(array('groups' => array('sylius'), 'min' => 1, 'max' => 1)),
+                ),
             ))
             ->add('enclosure', 'text', array(
-                'label'    => 'sylius.form.writer.csv.enclosure',
-            ))
-            ->add('add_header', 'checkbox', array(
-                'label'    => 'sylius.form.writer.csv.add_header',
-                'required' => false,
+                'label'      => 'sylius.form.writer.csv.enclosure',
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('sylius'))),
+                    new Length(array('groups' => array('sylius'), 'min' => 1, 'max' => 1)),
+                ),
             ))
             ->add('file', 'text', array(
                 'label'    => 'sylius.form.writer.file',
                 'required' => true,
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('sylius'))),
+                ),
             ))
         ;
     }

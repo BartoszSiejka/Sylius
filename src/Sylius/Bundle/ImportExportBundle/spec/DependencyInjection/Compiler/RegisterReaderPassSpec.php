@@ -21,7 +21,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class RegisterReadersPassSpec extends ObjectBehavior
 {
-
     public function it_should_implement_compiler_pass_interface()
     {
         $this->shouldImplement('Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface');
@@ -32,7 +31,7 @@ class RegisterReadersPassSpec extends ObjectBehavior
     {
         $container->hasDefinition('sylius.registry.export.reader')->willReturn(true);
         $container->getDefinition('sylius.registry.export.reader')->willReturn($exportReaderDefinition);
-        
+
         $container->hasDefinition('sylius.registry.import.reader')->willReturn(true);
         $container->getDefinition('sylius.registry.import.reader')->willReturn($importReaderDefinition);
 

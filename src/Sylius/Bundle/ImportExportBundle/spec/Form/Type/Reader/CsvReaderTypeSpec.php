@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class CsvReaderTypeSpec extends ObjectBehavior
 {
-
     function it_is_initializable()
     {
         $this->shouldHaveType('Sylius\Bundle\ImportExportBundle\Form\Type\Reader\CsvReaderType');
@@ -37,7 +36,7 @@ class CsvReaderTypeSpec extends ObjectBehavior
             ->willReturn($builder)
         ;
         $builder
-            ->add('header', 'checkbox', Argument::type('array'))
+            ->add('batch', 'number', Argument::type('array'))
             ->willReturn($builder)
         ;
         $builder

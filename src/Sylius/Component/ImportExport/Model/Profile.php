@@ -11,6 +11,8 @@
 
 namespace Sylius\Component\ImportExport\Model;
 
+use Doctrine\Common\Collections\Collection;
+
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
@@ -19,7 +21,7 @@ abstract class Profile implements ProfileInterface
 {
     /**
      * @var integer
-     */    
+     */
     protected $id;
 
     /**
@@ -46,7 +48,7 @@ abstract class Profile implements ProfileInterface
      * @var array
      */
     protected $writerConfiguration;
-    
+
     /**
      * @var string
      */
@@ -56,6 +58,13 @@ abstract class Profile implements ProfileInterface
      * @var array
      */
     protected $readerConfiguration;
+
+    /**
+     * Jobs of profile.
+     *
+     * @var Collection|JobInterface[]
+     */
+    protected $jobs;
 
     /**
      * Gets the value of id.
@@ -207,6 +216,86 @@ abstract class Profile implements ProfileInterface
     public function setReaderConfiguration(array $readerConfiguration)
     {
         $this->readerConfiguration = $readerConfiguration;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getJobs()
+    {
+        return $this->jobs;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setJobs(Collection $jobs)
+    {
+        $this->jobs = $jobs;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearJobs()
+    {
+        $this->jobs->clear();
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function countJobs()
+    {
+        return $this->jobs->count();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasJob(JobInterface $job)
+    {
+        return $this->jobs->contains($job);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addJob(JobInterface $job)
+    {
+        if ($this->hasJob($job)) {
+            return $this;
+        }
+
+        foreach ($this->jobs as $existingJob) {
+            if ($job->equals($existingJob)) {
+                $existingJob->merge($job, false);
+
+                return $this;
+            }
+        }
+
+        $job->setProfile($this);
+        $this->jobs->add($job);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeJob(JobInterface $job)
+    {
+        if ($this->hasJob($job)) {
+            $job->setProfile(null);
+            $this->jobs->removeElement($job);
+        }
 
         return $this;
     }

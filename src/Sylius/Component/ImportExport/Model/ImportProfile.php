@@ -11,16 +11,18 @@
 
 namespace Sylius\Component\ImportExport\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
 class ImportProfile extends Profile implements ImportProfileInterface
 {
-    function __construct() 
+    function __construct()
     {
         $this->reader = 'csv_reader';
         $this->readerConfiguration = array();
         $this->writer = 'product_writer';
         $this->writerConfiguration = array();
+        $this->jobs = new ArrayCollection();
     }
 }

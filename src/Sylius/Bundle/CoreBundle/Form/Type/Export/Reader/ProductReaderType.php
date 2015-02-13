@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Sylius\Bundle\ImportExportBundle\Form\Type\Reader;
+namespace Sylius\Bundle\CoreBundle\Form\Type\Export\Reader;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,8 +28,8 @@ class ProductReaderType extends AbstractType
     {
         $builder
             ->add('batch_size', 'number', array(
-                'label'    => 'sylius.form.reader.batch_size',
-                'empty_data'     => '100',
+                'label'      => 'sylius.form.reader.batch_size',
+                'empty_data' => '100',
             ))
         ;
     }

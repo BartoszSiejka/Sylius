@@ -13,6 +13,8 @@ namespace Sylius\Bundle\CoreBundle\Import\Writer\ORM;
 
 use Sylius\Component\ImportExport\Writer\WriterInterface;
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
+use Sylius\Component\ImportExport\Model\JobInterface;
 
 /**
  * Export reader.
@@ -23,25 +25,56 @@ abstract class AbstractDoctrineWriter implements WriterInterface
 {
     private $configuration;
     private $em;
-    
-    public function __construct(EntityManager $em) {
+
+    /**
+     * Work logger
+     *
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var int
+     */
+    private $resultCode = 0;
+
+    public function __construct(EntityManager $em)
+    {
         $this->em = $em;
+        $this->metadatas['row'] = 0;            
     }
-    
+
     public function write(array $items)
-    {           
-        foreach ($items as $item) {           
+    {
+        foreach ($items as $item) {
             $item = $this->process($item);
             $this->em->persist($item);
+            $this->metadatas['row']++;
         }
-        
         $this->em->flush();
     }
 
-    public function setConfiguration (array $configuration)
+    public function setConfiguration(array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
-    }  
+    }
 
     public abstract function process($result);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finalize(JobInterface $job)
+    {
+        $this->metadatas['result_code'] = $this->resultCode;
+        $job->addMetadata('writer',$this->metadatas);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResultCode()
+    {
+        return $this->resultCode;
+    }
 }

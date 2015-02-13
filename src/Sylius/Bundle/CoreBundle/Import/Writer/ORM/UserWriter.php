@@ -34,16 +34,16 @@ class UserWriter extends AbstractDoctrineWriter
         $this->countryRepository = $countryRepository;
         $this->provinceRepository = $provinceRepository;
     }
-    
-    public function process($data) 
+
+    public function process($data)
     {
         $userRepository = $this->userRepository;
-        
-        if($userRepository->findOneBy(array('email' => $data['email']))){
+
+        if ($userRepository->findOneBy(array('email' => $data['email']))) {
             $user = $userRepository->findOneByEmail($data['email']);
             $shippingAddress = $user->getShippingAddress();
             $billingAddress = $user->getBillingAddress();
-            
+
             $data['shipping_address_country'] ? $shippingCountry = $this->countryRepository->findOneByIsoName($data['shipping_address_country']) : $shippingCountry = $shippingAddress->getCountry();
             $data['shipping_address_province'] ? $shippingProvince = $this->provinceRepository->findOneByIsoName($data['shipping_address_province']) : $shippingProvince = $shippingAddress->getProvince();
             $data['billing_address_country'] ? $billingCountry = $this->countryRepository->findOneByIsoName($data['billing_address_country']) : $billingCountry = $billingAddress->getCountry();

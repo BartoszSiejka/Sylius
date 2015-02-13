@@ -11,57 +11,81 @@
 
 namespace Sylius\Component\ImportExport;
 
+use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
 use Sylius\Component\ImportExport\Model\ExportProfileInterface;
+use Sylius\Component\ImportExport\Model\Job;
 use Sylius\Component\Registry\ServiceRegistryInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
-class Exporter implements ExporterInterface
+class Exporter extends JobRunner implements ExporterInterface
 {
     /**
-     * Reader registry
-     *
-     * @var ServiceRegistryInterface
+     * {@inheritdoc}
      */
-    private $readerRegistry;
-
-    /**
-     * Writer registry
-     *
-     * @var ServiceRegistryInterface
-     */
-    private $writerRegistry;
-
-    /**
-     * Constructor
-     *
-     * @var ServiceRegistryInterface $readerRegistry
-     * @var ServiceRegistryInterface $writerRegistry
-     */
-    public function __construct(ServiceRegistryInterface $readerRegistry, ServiceRegistryInterface $writerRegistry)
+    public function __construct(
+        ServiceRegistryInterface $readerRegistry,
+        ServiceRegistryInterface $writerRegistry,
+        RepositoryInterface $exportJobRepository,
+        EntityManager $entityManager,
+        Logger $logger)
     {
-        $this->readerRegistry = $readerRegistry;
-        $this->writerRegistry = $writerRegistry;
+        parent::__construct($readerRegistry, $writerRegistry, $exportJobRepository, $entityManager, $logger);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function export(ExportProfileInterface $exportProfile)
     {
-        if (null === $readerType = $exportProfile->getReader()) {
-            throw new \InvalidArgumentException('Cannot write data with ExportProfile instance without writer defined.');
-        }
-        if (null === $writerType = $exportProfile->getWriter()) {
-            throw new \InvalidArgumentException('Cannot write data with ExportProfile instance without writer defined.');
+        $exportJob = $this->startJob($exportProfile);
+
+        $this->validate($exportJob, $exportProfile);
+
+        $reader = $this->readerRegistry->get($exportProfile->getReader());
+        $reader->setConfiguration($exportProfile->getReaderConfiguration(), $this->logger);
+
+        $writer = $this->writerRegistry->get($exportProfile->getWriter());
+        $writer->setConfiguration($exportProfile->getWriterConfiguration(), $this->logger);
+
+        while (null !== ($readLine = $reader->read())) {
+            $writer->write($readLine);
         }
 
-        $reader = $this->readerRegistry->get($readerType);
-        $reader->setConfiguration($exportProfile->getReaderConfiguration());
+        $writer->finalize($exportJob);
+        $reader->finalize($exportJob);
 
-        $writer = $this->writerRegistry->get($writerType);
-        $writer->setConfiguration($exportProfile->getWriterConfiguration());
+        $jobStatus = Job::COMPLETED;
 
-        foreach ($reader->read() as $data) {
-            $writer->write($data);
+        if ($reader->getResultCode() !== 0 || $writer->getResultCode() !== 0) {
+            $jobStatus = ($reader->getResultCode() < 0 || $writer->getResultCode() < 0) ? Job::FAILED : Job::ERROR;
         }
+
+        $this->endJob($exportJob, $jobStatus);
+    }
+
+    private function validate($exportJob, $exportProfile)
+    {
+        if (null === $exportProfile->getReader()) {
+            $this->generateErrorAction($exportJob, $exportProfile->getId(), 'read');
+        }
+        if (null === $exportProfile->getWriter()) {
+            $this->generateErrorAction($exportJob, $exportProfile->getId(), 'write');
+        }
+    }
+
+    private function generateErrorAction($exportJob, $exportProfileId, $type)
+    {
+        $this->endJob($exportJob, Job::FAILED);
+        $this->logger->addError(sprintf('ExportProfile: %d. %s', $exportProfileId, $this->generateErrorMessage($type)));
+        throw new \InvalidArgumentException($this->generateErrorMessage($type));
+    }
+
+    private function generateErrorMessage($type)
+    {
+        return sprintf('Cannot %s data with ExportProfile instance without %s defined.', $type, ($type == 'read') ? 'reader' : 'writer');
     }
 }

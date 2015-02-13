@@ -28,4 +28,8 @@ interface JobInterface
     public function setCreatedAt(\DateTime $createdAt);
     public function getUpdatedAt();
     public function setUpdatedAt(\DateTime $updatedAt);
+    public function getProfile();
+    public function setProfile(ProfileInterface $importProfile);
+    public function getMetadata();
+    public function setMetadata(array $metadata);
 }

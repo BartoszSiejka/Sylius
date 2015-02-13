@@ -48,6 +48,29 @@ abstract class Job implements JobInterface
     protected $updatedAt;
 
     /**
+     * @var ProfileInterface
+     */
+    protected $profile;
+
+    /**
+     * @var string
+     */
+    protected $filePath;
+
+    /**
+     * @var array
+     */
+    protected $metadata;
+
+    /**
+     * Job status
+     */
+    const COMPLETED = 'completed';
+    const ERROR     = 'completed with error';
+    const FAILED    = 'failed';
+    const RUNNING   = 'running';
+
+    /**
      * Gets the value of id.
      *
      * @return integer
@@ -175,5 +198,93 @@ abstract class Job implements JobInterface
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+    
+    /**
+     * Gets job's profile.
+     *
+     * @return ProfileInterface
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
+     * Sets job's profile.
+     *
+     * @param ProfileInterface $profile the profile
+     *
+     * @return self
+     */
+    public function setProfile(ProfileInterface $profile)
+    {
+        $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of filePath.
+     *
+     * @return string
+     */
+    public function getFilePath()
+    {
+        return $this->filePath;
+    }
+
+    /**
+     * Sets the value of filePath.
+     *
+     * @param string $filePath the filePath
+     *
+     * @return self
+     */
+    public function setFilePath($filePath)
+    {
+        $this->filePath = $filePath;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function equals(JobInterface $job)
+    {
+        return $this === $job;
+    }
+
+    /**
+     * Gets the value of metadata.
+     *
+     * @return array
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * Sets the value of metadata.
+     *
+     * @param array $metadata the metadata
+     *
+     * @return self
+     */
+    public function setMetadata(array $metadata)
+    {
+        $this->metadata = $metadata;
+
+        return $this;
+    }
+    
+    /**
+     * Adds metadata to array
+     */
+    public function addMetadata($key,$data)
+    {
+        $this->metadata[$key] = $data;
     }
 }
