@@ -62,7 +62,8 @@ class Importer extends JobRunner implements ImporterInterface
 
         try {
             while (null !== ($readLine = $reader->read())) {
-                $writer->write($readLine);
+                // $writer->write($readLine);
+                var_dump($readLine);
             }
         } catch (\Exception $e) {
             $this->endJob($job, Job::FAILED);
