@@ -88,13 +88,18 @@ class CsvWriter implements WriterInterface
             $this->metadatas['row'] = 0;
         }
 
+        if (!isset($items[0])) {
+            return;
+        }
+
         if (!$this->isHeaderSet) {
+
             $this->csvWriter->writeRow(array_keys($items[0]));
             $this->isHeaderSet = true;
         }
 
         $this->csvWriter->writeFromArray($items);
-        $this->metadatas['row']++;
+        $this->metadatas['row'] = $this->metadatas['row'] + sizeof($items);
     }
 
     /**
