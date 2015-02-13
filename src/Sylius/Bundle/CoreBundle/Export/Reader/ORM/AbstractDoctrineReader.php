@@ -44,7 +44,7 @@ abstract class AbstractDoctrineReader implements ReaderInterface
         if (!$this->running) {
             $this->running = true;
             $this->results = new \ArrayIterator($this->getQuery()->execute());
-            $batchSize = $this->configuration['batch_size'];
+            $this->batchSize = $this->configuration['batch_size'];
             $this->metadatas['row'] = 0;
         }
 

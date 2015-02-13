@@ -18,7 +18,7 @@ use Symfony\Component\Process\Process;
 
 class ExportProfileController extends ResourceController
 {
-    public function exportAction(
+    public function exportAction(Request $request, $code) {
         $process = new Process(sprintf('app/console sylius:export %s', $code));
         $process->run();
 

@@ -18,13 +18,13 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
 
 /**
- * Export taxonomy reader.
+ * Export product archetype reader.
  *
  * @author Bartosz Siejka <bartosz.siejka@lakion.com>
  */
-class TaxonomyReader implements ReaderInterface {
+class ProductArchetypeReader implements ReaderInterface {
 
-    private $taxonomyRepository;
+    private $productArchetypeRepository;
     private $results;
     private $configuration;
     private $running = false;
@@ -42,9 +42,9 @@ class TaxonomyReader implements ReaderInterface {
      */
     private $batchSize;
 
-    public function __construct(RepositoryInterface $taxonomyRepository) 
+    public function __construct(RepositoryInterface $productArchetypeRepository) 
     {
-        $this->taxonomyRepository = $taxonomyRepository;
+        $this->productArchetypeRepository = $productArchetypeRepository;
     }
 
     public function read() 
@@ -109,7 +109,7 @@ class TaxonomyReader implements ReaderInterface {
 
     public function getQuery() 
     {
-        $query = $this->taxonomyRepository->createQueryBuilder('t')
+        $query = $this->productArchetypeRepository->createQueryBuilder('pac')
                 ->getQuery();
 
         return $query;
@@ -143,7 +143,7 @@ class TaxonomyReader implements ReaderInterface {
      */
     public function getType() 
     {
-        return 'taxonomy';
+        return 'product_archetype';
     }
 
 }
