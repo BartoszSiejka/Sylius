@@ -54,6 +54,7 @@ class ProductReader extends AbstractDoctrineReader
             'id' => $product->getId(),
             'name' => $product->getName(),
             'price' => $product->getPrice(),
+            'sku' => $product->getSku(),
             'description' => $product->getDescription(),
             'short_description' => $product->getShortDescription(),
             'archetype' => $archetype ? $archetype->getCode() : null,

@@ -137,4 +137,27 @@ class ProductRepository extends BaseProductRepository
     {
         return $this->findBy(array(), array('createdAt' => 'desc'), $limit);
     }
+
+    /**
+     * Find product by sku.
+     *
+     * @param int $limit
+     *
+     * @return ProductInterface[]
+     */
+    public function findOneBySku($sku)
+    {
+        $queryBuilder = $this->createQueryBuilder('o');
+
+        $queryBuilder
+            ->leftJoin('o.variants', 'variant')
+            ->andWhere('variant.sku = :sku')
+            ->setParameter('sku', $sku)
+        ;
+
+        return $result = $queryBuilder
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

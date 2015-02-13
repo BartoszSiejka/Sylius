@@ -13,6 +13,8 @@ namespace Sylius\Bundle\ImportExportBundle\Form\Type\Reader;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Reader choice choice type.
@@ -29,19 +31,31 @@ class CsvReaderType extends AbstractType
         $builder
             ->add('delimiter', 'text', array(
                 'label'    => 'sylius.form.reader.csv.delimiter',
-                'empty_data'     => ';',
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('sylius'))),
+                    new Length(array('groups' => array('sylius'), 'min' => 1, 'max' => 1)),
+                ),
             ))
             ->add('enclosure', 'text', array(
                 'label'    => 'sylius.form.reader.csv.enclosure',
-                'empty_data'     => '"',
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('sylius'))),
+                    new Length(array('groups' => array('sylius'), 'min' => 1, 'max' => 1)),
+                ),
             ))
             ->add('batch', 'number', array(
                 'label'    => 'sylius.form.reader.csv.batch_size',
-                'empty_data'     => '100',
+                'required' => true,
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('sylius'))),
+                ),
             ))
             ->add('file', 'text', array(
-                'label'    => 'sylius.form.reader.file',
+                'label'    => 'sylius.form.writer.file',
                 'required' => true,
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('sylius'))),
+                ),
             ))
         ;
     }
