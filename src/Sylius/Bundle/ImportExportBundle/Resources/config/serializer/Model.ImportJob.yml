@@ -24,15 +24,12 @@ Sylius\Component\ImportExport\Model\ImportJob:
         profile:
             expose: true
             type: ProfileInterface
-<<<<<<< HEAD
         metadata:
             expose: true
             type: array
-=======
         filePath:
             expose: true
             type: string
->>>>>>> 95160007aac213b1ee572b1dedc979ab9fc9f430
     relations:
         - rel: self
           href:

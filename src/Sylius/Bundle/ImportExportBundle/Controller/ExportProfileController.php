@@ -18,14 +18,14 @@ use Symfony\Component\Process\Process;
 
 class ExportProfileController extends ResourceController
 {
-    // public function exportAction(Request $request, $code)
-    //     $process = new Process(sprintf('app/console sylius:export %s', $code));
-    //     $process->run();
+    public function exportAction(Request $request, $code) {
+        $process = new Process(sprintf('app/console sylius:export %s', $code));
+        $process->run();
 
-    //     if (!$process->isSuccessful()) {
-    //         throw new \RuntimeException($process->getErrorOutput());
-    //     }
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getErrorOutput());
+        }
 
-    //     return new Response($process->getOutput());
-    // }
+        return new Response($process->getOutput());
+    }
 }

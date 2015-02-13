@@ -23,7 +23,7 @@
         <parameter key="sylius.form.type.export_writer_choice.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\ExportWriterChoiceType</parameter>
         <parameter key="sylius.form.type.export_reader_choice.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ExportReaderChoiceType</parameter>
         <parameter key="sylius.form.type.reader.csv.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\CsvReaderType</parameter>
-
+        
         <parameter key="sylius.form.type.writer.csv_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Writer\CsvWriterType</parameter>
 
         <parameter key="sylius.import_export.importer.class">Sylius\Component\ImportExport\Importer</parameter> 

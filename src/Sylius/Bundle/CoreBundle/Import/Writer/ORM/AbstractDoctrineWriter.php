@@ -61,7 +61,6 @@ abstract class AbstractDoctrineWriter implements WriterInterface
                 $this->metadatas['row']++;
             }
         }
-
         $this->em->flush();
     }
 
