@@ -57,10 +57,14 @@ class CsvReader implements ReaderInterface
     public function read()
     {
         if (!$this->running) {
+            
+            $this->validate($this->configuration);
+
             $this->csvReader = new Reader($this->configuration['file'], 'r', true);
             $this->csvReader->setDelimiter($this->configuration['delimiter']);
             $this->csvReader->setEnclosure($this->configuration['enclosure']);
             $this->running = true;
+            $this->metadatas['row'] = 0;
         }
 
         $data = array();
@@ -73,6 +77,7 @@ class CsvReader implements ReaderInterface
             }
 
             $data[] = $row;
+            $this->metadatas['row']++;
         }
 
         return $data;
@@ -89,7 +94,8 @@ class CsvReader implements ReaderInterface
 
     public function finalize(JobInterface $job)
     {
-        $job->addMetadata('result_code',$this->resultCode);
+        $this->metadatas['result_code'] = $this->resultCode;
+        $job->addMetadata('reader',$this->metadatas);
     }
 
     /**
@@ -106,5 +112,21 @@ class CsvReader implements ReaderInterface
     public function getType()
     {
         return 'csv';
+    }
+
+    private function validate(array $configuration)
+    {
+        if (empty($this->configuration['file'])) {
+            $this->resultCode = -1;
+            throw new \InvalidArgumentException('Cannot read data without file path defined.');
+        }
+        if (empty($this->configuration['delimiter'])) {
+            $this->resultCode = -1;
+            throw new \InvalidArgumentException('Cannot read data without delimiter defined.');
+        }
+        if (empty($this->configuration['enclosure'])) {
+            $this->resultCode = -1;
+            throw new \InvalidArgumentException('Cannot read data without enclosure defined.');
+        }
     }
 }

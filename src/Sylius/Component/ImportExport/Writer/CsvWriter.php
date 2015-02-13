@@ -85,7 +85,7 @@ class CsvWriter implements WriterInterface
             $this->csvWriter->setDelimiter($this->configuration['delimiter']);
             $this->csvWriter->setEnclosure($this->configuration['enclosure']);
             $this->running = true;
-            $this->metadatas['written_row'] = 0;
+            $this->metadatas['row'] = 0;
         }
 
         if (!$this->isHeaderSet) {
@@ -95,7 +95,7 @@ class CsvWriter implements WriterInterface
         }
 
         $this->csvWriter->writeRow($items);
-        $this->metadatas['written_row']++;
+        $this->metadatas['row']++;
     }
 
     /**
@@ -106,10 +106,8 @@ class CsvWriter implements WriterInterface
         $fileName = sprintf('export_%d_%s.csv', $job->getProfile()->getId(), $job->getStartTime()->format('Y_m_d_H_i_s'));
         $this->filesystem->write($fileName, file_get_contents($this->configuration['file']));
         $job->setFilePath($fileName);
-        foreach ($this->metadatas as $key => $metadata) {
-            $job->addMetadata($key,$metadata);
-        }
-        $job->addMetadata('result_code',$this->resultCode);
+        $this->metadatas['result_code'] = $this->resultCode;
+        $job->addMetadata('writer',$this->metadatas);
     }
 
     /**

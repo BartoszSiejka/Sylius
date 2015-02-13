@@ -39,6 +39,7 @@ abstract class AbstractDoctrineReader implements ReaderInterface
             $this->results = $this->getQuery()->execute();
             $this->results = new \ArrayIterator($this->results);
             $batchSize = $this->configuration['batch_size'];
+            $this->metadatas['row'] = 0;
         }
 
         $results = array();
@@ -50,6 +51,7 @@ abstract class AbstractDoctrineReader implements ReaderInterface
 
             $result = $this->process($result);
             $results[] = $result;
+            $this->metadatas['row']++;
         }
 
         return $results;
@@ -68,7 +70,8 @@ abstract class AbstractDoctrineReader implements ReaderInterface
      */
     public function finalize(JobInterface $job)
     {
-        $job->addMetadata('result_code',$this->resultCode);
+        $this->metadatas['result_code'] = $this->resultCode;
+        $job->addMetadata('reader',$this->metadatas);
     }
 
     /**

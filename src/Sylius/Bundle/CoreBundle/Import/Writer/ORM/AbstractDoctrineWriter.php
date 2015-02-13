@@ -41,6 +41,7 @@ abstract class AbstractDoctrineWriter implements WriterInterface
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+        $this->metadatas['row'] = 0;            
     }
 
     public function write(array $items)
@@ -48,6 +49,7 @@ abstract class AbstractDoctrineWriter implements WriterInterface
         foreach ($items as $item) {
             $item = $this->process($item);
             $this->em->persist($item);
+            $this->metadatas['row']++;
         }
 
         $this->em->flush();
@@ -65,7 +67,8 @@ abstract class AbstractDoctrineWriter implements WriterInterface
      */
     public function finalize(JobInterface $job)
     {
-        $job->addMetadata('result_code',$this->resultCode);
+        $this->metadatas['result_code'] = $this->resultCode;
+        $job->addMetadata('writer',$this->metadatas);
     }
 
     /**

@@ -74,8 +74,11 @@
                     <tr>
                         <td>{{ 'sylius.export_job.metadata'|trans }}</td>
                         <td>
-                            {% for key,item in export_job.metadata  %}
-                                {{ key }} => {{ item }}<br />
+                            {% for key,items in export_job.metadata  %}
+                                {{ key }} <br/>  
+                                {% for metadata_name,value in items  %}
+                                    {{ metadata_name }} => {{ value }}<br />
+                                {% endfor %}
                             {% endfor %}
                         </td>
                     </tr>
