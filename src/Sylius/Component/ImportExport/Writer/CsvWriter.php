@@ -79,8 +79,7 @@ class CsvWriter implements WriterInterface
         }
 
         if (!$this->isHeaderSet) {
-            $header = array_keys($items);
-            $this->csvWriter->writeRow($header);
+            $this->csvWriter->writeRow(array_keys($items[0]));
             $this->isHeaderSet = true;
         }
 
