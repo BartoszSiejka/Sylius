@@ -17,6 +17,7 @@
                                http://symfony.com/schema/dic/services/services-1.0.xsd"> 
     <parameters>    
         <!-- Readers -->
+        <parameter key="sylius.export.group_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\GroupReader</parameter>
         <parameter key="sylius.export.user_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\UserReader</parameter>
         <parameter key="sylius.export.product_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\ProductReader</parameter>
         <parameter key="sylius.export.product_archetype_reader.class">Sylius\Bundle\CoreBundle\Export\Reader\ORM\ProductArchetypeReader</parameter>
@@ -30,8 +31,10 @@
         <parameter key="sylius.form.type.reader.product_archetype_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductArchetypeReaderType</parameter>
         <parameter key="sylius.form.type.reader.product_attribute_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductAttributeType</parameter>
         <parameter key="sylius.form.type.reader.product_type.class">Sylius\Bundle\CoreBundle\Form\Type\Export\Reader\ProductReaderType</parameter>
+        <parameter key="sylius.form.type.reader.group_type.class">Sylius\Bundle\CoreBundle\Form\Type\Export\Reader\GroupReaderType</parameter>
 
         <!-- Writers -->
+        <parameter key="sylius.import.group_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\GroupWriter</parameter>
         <parameter key="sylius.import.user_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\UserWriter</parameter>
         <parameter key="sylius.import.product_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\ProductWriter</parameter>
         <parameter key="sylius.import.user_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\UserWriter</parameter>
@@ -45,6 +48,10 @@
 
     <services>
         <!-- Export reader -->
+        <service id="sylius.export.group_reader" class="%sylius.export.group_reader.class%">
+            <argument type="service" id="sylius.repository.group" />
+            <tag name="sylius.export.reader" reader="group_reader" label="Group reader" />
+        </service>
         <service id="sylius.export.user_reader" class="%sylius.export.user_reader.class%">
             <argument type="service" id="sylius.repository.user" />
             <tag name="sylius.export.reader" reader="user_reader" label="User reader" />
@@ -92,6 +99,9 @@
         <service id="sylius.form.type.reader.product_archetype_type" class="%sylius.form.type.reader.product_archetype_type.class%">
             <tag name="form.type" alias="sylius_product_archetype_reader" />
         </service>
+        <service id="sylius.form.type.reader.group_type" class="%sylius.form.type.reader.group_type.class%">
+            <tag name="form.type" alias="sylius_group_reader" />
+        </service>
 
         <!-- Import writer -->
         <service id="sylius.import.product_writer" class="%sylius.import.product_writer.class%">
@@ -118,6 +128,11 @@
             <argument type="service" id="sylius.repository.product_option" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <tag name="sylius.import.writer" writer="product_option_writer" label="Product option writer" />
+        </service>
+        <service id="sylius.import.group_writer" class="%sylius.import.group_writer.class%">
+            <argument type="service" id="sylius.repository.group" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <tag name="sylius.import.writer" writer="group_writer" label="Group writer" />
         </service>
         <service id="sylius.import.taxonomy_writer" class="%sylius.import.taxonomy_writer.class%">
             <argument type="service" id="sylius.repository.taxonomy" />

@@ -22,11 +22,16 @@ use Sylius\Component\ImportExport\Reader\ReaderInterface;
  */
 abstract class AbstractDoctrineReader implements ReaderInterface
 {
-    private $results;
-    private $running = false;
+    /**
+     * @var array
+     */
     protected $configuration;
+
+    /**
+     * @var Logger
+     */
     protected $logger;
-    
+
     /**
      * @var int
      */
@@ -39,53 +44,72 @@ abstract class AbstractDoctrineReader implements ReaderInterface
      */
     protected $batchSize;
 
+    /**
+     * @var array
+     */
+    private $results;
+
+    /**
+     * @var bool
+     */
+    private $running = false;
+
+    /**
+     * @var array
+     */
+    private $statistics;
+
+    abstract public function process($result);
+
+    /**
+     * {@inheritdoc}
+     */
     public function read()
     {
-        if (!$this->running)
-        {
+        $results = array();
+
+        if (!$this->running) {
             $this->running = true;
             $this->results = new \ArrayIterator($this->getQuery()->execute());
             $this->batchSize = $this->configuration['batch_size'];
-            $this->metadatas['row'] = 0;
+            $this->statistics['row'] = 0;
         }
 
-        $results = array();
-
-        for ($i=0; $i<$this->batchSize; $i++)
-        {
+        for ($i = 0; $i<$this->batchSize; $i++) {
             if (false === $this->results->valid()) {
-                return empty($results) ? null : $results;    
+                $this->running = false;
+
+                return empty($results) ? null : $results;
             }
 
-            if ($result = $this->results->current())
-            {
+            if ($result = $this->results->current()) {
                 $this->results->next();
             }
 
-            
             $result = $this->process($result);
             $results[] = $result;
-            $this->metadatas['row']++;
+            $this->statistics['row']++;
         }
 
         return $results;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setConfiguration(array $configuration, Logger $logger)
     {
         $this->configuration = $configuration;
         $this->logger = $logger;
     }
 
-    public abstract function process($result);
-
     /**
      * {@inheritdoc}
      */
     public function finalize(JobInterface $job)
     {
-        $this->metadatas['result_code'] = $this->resultCode;
-        $job->addMetadata('reader',$this->metadatas);
+        $this->statistics['result_code'] = $this->resultCode;
+        $job->addMetadata('reader', $this->statistics);
     }
 
     /**

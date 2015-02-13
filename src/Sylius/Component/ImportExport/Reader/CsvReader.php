@@ -128,5 +128,9 @@ class CsvReader implements ReaderInterface
             $this->resultCode = -1;
             throw new \InvalidArgumentException('Cannot read data without enclosure defined.');
         }
+        if ($this->configuration['enclosure'] === '~' || $this->configuration['delimiter'] === '~') {
+            $this->resultCode = -1;
+            throw new \InvalidArgumentException('Cannot use tilde like a delimeter or eclosure.');
+        }
     }
 }
