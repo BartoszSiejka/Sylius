@@ -31,7 +31,7 @@
         <parameter key="sylius.form.type.reader.product_archetype_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductArchetypeReaderType</parameter>
         <parameter key="sylius.form.type.reader.product_attribute_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\ProductAttributeType</parameter>
         <parameter key="sylius.form.type.reader.product_type.class">Sylius\Bundle\CoreBundle\Form\Type\Export\Reader\ProductReaderType</parameter>
-        <parameter key="sylius.form.type.reader.group_type.class">Sylius\Bundle\CoreBundle\Form\Type\Export\Reader\GroupReaderType</parameter>
+        <parameter key="sylius.form.type.reader.group_type.class">Sylius\Bundle\ImportExportBundle\Form\Type\Reader\GroupReaderType</parameter>
 
         <!-- Writers -->
         <parameter key="sylius.import.group_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\GroupWriter</parameter>

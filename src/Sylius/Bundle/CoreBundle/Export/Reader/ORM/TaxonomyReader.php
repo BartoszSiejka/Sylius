@@ -13,7 +13,6 @@ namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
 use Monolog\Logger;
 use Sylius\Component\ImportExport\Model\JobInterface;
-use Sylius\Component\ImportExport\Reader\ReaderInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
 
@@ -22,7 +21,7 @@ use Sylius\Component\Core\Model\TaxonInterface;
  *
  * @author Bartosz Siejka <bartosz.siejka@lakion.com>
  */
-class TaxonomyReader implements ReaderInterface
+class TaxonomyReader extends AbstractDoctrineReader
 {
     /**
      * @var array
@@ -65,28 +64,9 @@ class TaxonomyReader implements ReaderInterface
     {
         $this->taxonomyRepository = $taxonomyRepository;
     }
-
-    public function read()
-    {
-        $taxons = array();
-
-        if (!$this->running) {
-            $this->running = true;
-            $this->results = $this->getQuery()->execute();
-            $this->results = new \ArrayIterator($this->results);
-            $this->batchSize = $this->configuration['batch_size'];
-            $this->statistics['row'] = 0;
-        }
-
-        for ($i = 0; $i < $this->batchSize; $i++) {
-            if ($result = $this->results->current()) {
-                $this->results->next();
-            }
-
-            $taxons = array_merge($taxons, $this->getChildren($result->getRoot()));
-        }
-
-        foreach ($taxons as $taxon) {
+    
+    public function process($taxons) {
+        foreach ($taxons as $taxon) { 
             $results[] = array(
                 'taxonomy_id'      => $taxon->getTaxonomy()->getId(),
                 'taxonomy_name'    => $taxon->getTaxonomy(),
@@ -110,9 +90,33 @@ class TaxonomyReader implements ReaderInterface
                 'parent_name'      => $taxon->getParent()->getName(),
             );
         }
+        
+        return $results;
+    }
 
+    public function read()
+    {
+        $taxons = array();
+
+        if (!$this->running) {
+            $this->running = true;
+            $this->results = $this->getQuery()->execute();
+            $this->results = new \ArrayIterator($this->results);
+            $this->batchSize = $this->configuration['batch_size'];
+            $this->statistics['row'] = 0;
+        }
+
+        for ($i = 0; $i < $this->batchSize; $i++) {
+            if ($result = $this->results->current()) {
+                $this->results->next();
+            }
+
+            $taxons = array_merge($taxons, $this->getChildren($result->getRoot()));
+        }
+
+        $results = $this->process($taxons);
         $this->statistics['row']++;
-
+        
         return $results;
     }
 
@@ -133,29 +137,6 @@ class TaxonomyReader implements ReaderInterface
                 ->getQuery();
 
         return $query;
-    }
-
-    public function setConfiguration(array $configuration, Logger $logger)
-    {
-        $this->configuration = $configuration;
-        $this->logger = $logger;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function finalize(JobInterface $job)
-    {
-        $this->statistics['result_code'] = $this->resultCode;
-        $job->addMetadata('reader', $this->statistics);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getResultCode()
-    {
-        return $this->resultCode;
     }
 
     /**

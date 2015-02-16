@@ -26,8 +26,13 @@ class UserWriter extends AbstractDoctrineWriter
     private $countryRepository;
     private $provinceRepository;
     
-    public function __construct(RepositoryInterface $userRepository, EntityManager $em, RepositoryInterface $addressRepository, RepositoryInterface $countryRepository, RepositoryInterface $provinceRepository)
-    {
+    public function __construct(
+        RepositoryInterface $userRepository, 
+        RepositoryInterface $addressRepository, 
+        RepositoryInterface $countryRepository, 
+        RepositoryInterface $provinceRepository,
+        EntityManager $em
+    ) {
         parent::__construct($em);
         $this->userRepository = $userRepository;
         $this->addressRepository = $addressRepository;
@@ -124,6 +129,6 @@ class UserWriter extends AbstractDoctrineWriter
      */
     public function getType()
     {
-        return 'import_user';
+        return 'user';
     }
 }

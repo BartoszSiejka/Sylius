@@ -111,6 +111,6 @@ class TaxonomyWriter extends AbstractDoctrineWriter
      */
     public function getType()
     {
-        return 'import_product_option';
+        return 'taxonomy';
     }
 }
