@@ -33,9 +33,7 @@ class ProductAttributeWriter extends AbstractDoctrineWriter
     {
         $productAttributeRepository = $this->productAttributeRepository;
         
-        if($productAttributeRepository->findOneBy(array('name' => $data['name']))){
-            $productAttribute = $productAttributeRepository->findOneByName($data['name']);
-            
+        if($productAttribute = $productAttributeRepository->findOneBy(array('name' => $data['name']))){
             $data['name'] ? $productAttribute->setName($data['name']) : $productAttribute->getName();
             $data['type'] ? $productAttribute->setType($data['type']) : $productAttribute->getType();
             $data['created_at'] ? $productAttribute->setCreatedAt(new \DateTime($data['created_at'])) : $productAttribute->getCreatedAt();
@@ -59,6 +57,6 @@ class ProductAttributeWriter extends AbstractDoctrineWriter
      */
     public function getType()
     {
-        return 'import_product_attribute';
+        return 'product_attribute';
     }
 }

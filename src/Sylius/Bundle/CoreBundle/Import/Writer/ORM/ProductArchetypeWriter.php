@@ -92,6 +92,6 @@ class ProductArchetypeWriter extends AbstractDoctrineWriter
      */
     public function getType()
     {
-        return 'import_product_archetype';
+        return 'product_archetype';
     }
 }
