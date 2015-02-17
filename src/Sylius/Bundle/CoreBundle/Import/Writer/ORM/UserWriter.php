@@ -26,8 +26,13 @@ class UserWriter extends AbstractDoctrineWriter
     private $countryRepository;
     private $provinceRepository;
     
-    public function __construct(RepositoryInterface $userRepository, EntityManager $em, RepositoryInterface $addressRepository, RepositoryInterface $countryRepository, RepositoryInterface $provinceRepository)
-    {
+    public function __construct(
+        RepositoryInterface $userRepository, 
+        RepositoryInterface $addressRepository, 
+        RepositoryInterface $countryRepository, 
+        RepositoryInterface $provinceRepository,
+        EntityManager $em
+    ) {
         parent::__construct($em);
         $this->userRepository = $userRepository;
         $this->addressRepository = $addressRepository;
@@ -83,10 +88,10 @@ class UserWriter extends AbstractDoctrineWriter
         $user = $userRepository->createNew();
         $shippingAddress = $this->addressRepository->createNew();
         $billingAddress = $this->addressRepository->createNew();
-        $data['shipping_address_country'] ? $shippingCountry = $this->countryRepository->findOneByIsoName($data['shipping_address_country']) : $shippingCountry = null;
-        $data['shipping_address_province'] ? $shippingProvince = $this->provinceRepository->findOneByIsoName($data['shipping_address_province']) : $shippingProvince = null;
-        $data['billing_address_country'] ? $billingCountry = $this->countryRepository->findOneByIsoName($data['billing_address_country']) : $billingCountry = null;
-        $data['billing_address_province'] ? $billingProvince = $this->provinceRepository->findOneByIsoName($data['billing_address_province']) : $billingProvince = null;
+        $data['shipping_address_country'] ? $shippingCountry = $this->countryRepository->findOneBy(array('isoName' => $data['shipping_address_country'])) : $shippingCountry = null;
+        $data['shipping_address_province'] ? $shippingProvince = $this->provinceRepository->findOneBy(array('isoName' => $data['shipping_address_province'])) : $shippingProvince = null;
+        $data['billing_address_country'] ? $billingCountry = $this->countryRepository->findOneBy(array('isoName' => $data['billing_address_country'])) : $billingCountry = null;
+        $data['billing_address_province'] ? $billingProvince = $this->provinceRepository->findOneBy(array('isoName' => $data['billing_address_province'])) : $billingProvince = null;
         
         $user->setFirstName($data['first_name']);
         $user->setLastName($data['last_name']);
@@ -124,6 +129,6 @@ class UserWriter extends AbstractDoctrineWriter
      */
     public function getType()
     {
-        return 'import_user';
+        return 'user';
     }
 }

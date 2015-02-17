@@ -78,8 +78,6 @@ abstract class AbstractDoctrineReader implements ReaderInterface
 
         for ($i = 0; $i<$this->batchSize; $i++) {
             if (false === $this->results->valid()) {
-                $this->running = false;
-
                 return empty($results) ? null : $results;
             }
 

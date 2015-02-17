@@ -65,8 +65,11 @@ class Importer extends JobRunner implements ImporterInterface
                  $writer->write($readLine);
             }
         } catch (\Exception $e) {
+            $writer->finalize($job);
+            $reader->finalize($job);
             $this->endJob($job, Job::FAILED);
             $this->logger->addError(sprintf('ImportProfile: %d. Fatal error occured during reading/writing. Error message: %s', $importProfile->getId(), $e->getMessage()));
+            return;
         }
         
         $writer->finalize($job);

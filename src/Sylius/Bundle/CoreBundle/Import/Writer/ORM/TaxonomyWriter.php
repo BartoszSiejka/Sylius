@@ -37,7 +37,7 @@ class TaxonomyWriter extends AbstractDoctrineWriter
         $taxonRepository = $this->taxonRepository;
         
         $taxon = $taxonRepository->createNew();
-        $parent = $taxonRepository->findOneById($data['parent_id']);
+        $parent = $taxonRepository->findOneBy(array('id' => $data['parent_id']));
         
         if($taxonomy = $taxonomyRepository->findOneBy(array('name' => $data['taxonomy_name']))){
             $root = $taxonRepository->findOneBy(array('name' => $data['root_name']));
@@ -111,6 +111,6 @@ class TaxonomyWriter extends AbstractDoctrineWriter
      */
     public function getType()
     {
-        return 'import_product_option';
+        return 'taxonomy';
     }
 }

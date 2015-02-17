@@ -33,9 +33,7 @@ class ProductOptionWriter extends AbstractDoctrineWriter
     {
         $productOptionRepository = $this->productOptionRepository;
         
-        if($productOptionRepository->findOneBy(array('name' => $data['name']))){
-            $productOption = $productOptionRepository->findOneByName($data['name']);
-            
+        if($productOption = $productOptionRepository->findOneBy(array('name' => $data['name']))){
             $data['name'] ? $productOption->setName($data['name']) : $productOption->getName();
             $data['created_at'] ? $productOption->setCreatedAt(new \DateTime($data['created_at'])) : $productOption->getCreatedAt();
             $data['presentation'] ? $productOption->setPresentation($data['presentation']) : $productOption->getPresentation();
@@ -57,6 +55,6 @@ class ProductOptionWriter extends AbstractDoctrineWriter
      */
     public function getType()
     {
-        return 'import_product_option';
+        return 'product_option';
     }
 }

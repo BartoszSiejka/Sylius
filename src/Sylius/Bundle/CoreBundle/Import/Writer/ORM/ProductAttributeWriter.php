@@ -38,7 +38,7 @@ class ProductAttributeWriter extends AbstractDoctrineWriter
             $data['type'] ? $productAttribute->setType($data['type']) : $productAttribute->getType();
             $data['created_at'] ? $productAttribute->setCreatedAt(new \DateTime($data['created_at'])) : $productAttribute->getCreatedAt();
             $data['presentation'] ? $productAttribute->setPresentation($data['presentation']) : $productAttribute->getPresentation();
-
+            
             return $productAttribute;
         }
         

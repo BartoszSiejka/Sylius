@@ -97,7 +97,7 @@ class JobRunner
         $job->setStatus(Job::RUNNING);
         $job->setProfile($profile);
 
-        $this->logger->pushHandler(new StreamHandler(sprintf('app/logs/export_job_%d_%s.log', $profile->getId(), $job->getStartTime()->format('Y_m_d_H_i_s'))));
+        $this->logger->pushHandler(new StreamHandler(sprintf('app/logs/job_%d_%s.log', $profile->getId(), $job->getStartTime()->format('Y_m_d_H_i_s'))));
         $this->logger->addInfo(sprintf("Profile: %d; StartTime: %s", $profile->getId(), $job->getStartTime()->format('Y-m-d H:i:s')));
 
         $profile->addJob($job);
