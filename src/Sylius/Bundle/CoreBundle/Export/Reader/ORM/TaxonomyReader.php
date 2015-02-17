@@ -66,6 +66,8 @@ class TaxonomyReader extends AbstractDoctrineReader
     }
     
     public function process($taxons) {
+        $results = array();
+        
         foreach ($taxons as $taxon) { 
             $results[] = array(
                 'taxonomy_id'      => $taxon->getTaxonomy()->getId(),
@@ -103,21 +105,32 @@ class TaxonomyReader extends AbstractDoctrineReader
             $this->results = $this->getQuery()->execute();
             $this->results = new \ArrayIterator($this->results);
             $this->batchSize = $this->configuration['batch_size'];
+            $this->statistics = array();
             $this->statistics['row'] = 0;
         }
 
         for ($i = 0; $i < $this->batchSize; $i++) {
-            if ($result = $this->results->current()) {
+            if (false === $this->results->valid()) {
+                if (empty($results)) { 
+                    $this->running = false;
+                    
+                    return null;
+                }
+                
+                return $results;
+            }
+            
+            if ($results = $this->results->current()) {
                 $this->results->next();
             }
 
-            $taxons = array_merge($taxons, $this->getChildren($result->getRoot()));
+            $taxons = array_merge($taxons, $this->getChildren($results->getRoot()));
         }
 
-        $results = $this->process($taxons);
+        $taxons = $this->process($taxons);
         $this->statistics['row']++;
         
-        return $results;
+        return $taxons;
     }
 
     public function getChildren(TaxonInterface $taxon)

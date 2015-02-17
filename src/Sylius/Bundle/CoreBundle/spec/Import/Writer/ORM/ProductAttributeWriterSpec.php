@@ -59,12 +59,12 @@ class ProductAttributeWriterSpec extends ObjectBehavior
         $productAttributeRepository->findOneBy(array('name' => 'testAttribute'))->willReturn(null);
         $productAttributeRepository->createNew()->willReturn($productAttribute);
 
-        $productAttribute->setName('testAttribute');
-        $productAttribute->setType('text');
-        $productAttribute->setCreatedAt('2015-02-10 10:02:09');
-        $productAttribute->setPresentation('testPresentation');
+        $this->process($data);
 
-        $this->process($data)->shouldReturn($productAttribute);
+        $productAttribute->setName('testAttribute')->shouldBeCalled();
+        $productAttribute->setType('text')->shouldBeCalled();
+        $productAttribute->setCreatedAt(new \DateTime('2015-02-10 10:02:09'))->shouldBeCalled();
+        $productAttribute->setPresentation('testPresentation')->shouldBeCalled();
     }
 
     function it_updates_attribute_if_it_exists($productAttributeRepository, Attribute $productAttribute)
@@ -72,7 +72,7 @@ class ProductAttributeWriterSpec extends ObjectBehavior
         $data = array(
             'id'            => 1,
             'name'          => 'testAttribute',
-            'type'          => 'text',
+            'type'          => null,
             'created_at'    => '2015-02-10 10:02:09',
             'presentation'  => 'testPresentation',
         );
@@ -80,12 +80,12 @@ class ProductAttributeWriterSpec extends ObjectBehavior
         $productAttributeRepository->findOneBy(array('name' => 'testAttribute'))->willReturn($productAttribute);
         $productAttributeRepository->createNew()->shouldNotBeCalled();
         
-        $productAttribute->setName('testAttribute');
-        $productAttribute->setType('text');
-        $productAttribute->setCreatedAt('2015-02-10 10:02:09');
-        $productAttribute->setPresentation('testPresentation');
+        $this->process($data);
 
-        $this->process($data)->shouldReturn($productAttribute);
+        $productAttribute->setName('testAttribute')->shouldBeCalled();
+        $productAttribute->setType('text')->shouldNotBeCalled();
+        $productAttribute->setCreatedAt(new \DateTime('2015-02-10 10:02:09'))->shouldBeCalled();
+        $productAttribute->setPresentation('testPresentation')->shouldBeCalled();
     }
     
     function it_has_type()

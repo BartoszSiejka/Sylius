@@ -40,28 +40,22 @@ class ProductArchetypeWriter extends AbstractDoctrineWriter
         $productArchetypeRepository = $this->productArchetypeRepository;
         $options = explode("~", $data['options']);
         $attributes = explode("~", $data['attributes']);
-        $parent = $productArchetypeRepository->findOneBy(array('name' => $data['parent']));
-        
-        if($productArchetype = $productArchetypeRepository->findOneBy(array('code' => $data['code']))) {
-            $parent = $productArchetypeRepository->findOneBy(array('name' => $data['parent']));
+        $data['parent'] ? $parent = $productArchetypeRepository->findOneBy(array('name' => $data['parent'])) : $parent = null;
 
-            $data['name'] ? $productArchetype->setName($data['name']) : $productArchetype->getName();
-            $data['code'] ? $productArchetype->setCode($data['code']) : $productArchetype->getCode();
-            $data['parent'] ? $productArchetype->setParent($parent) : $productArchetype->getParent();
+        if($productArchetype = $productArchetypeRepository->findOneBy(array('code' => $data['code']))) {
+            $data['name'] ? $productArchetype->setName($data['name']) : null;
+            $data['code'] ? $productArchetype->setCode($data['code']) : null;
+            $data['parent'] ? $productArchetype->setParent($parent) : null;
             $data['name'] ? $productArchetype->setCreatedAt(new \DateTime($data['created_at'])) : new \DateTime();
 
             foreach ($attributes as $attribute) {
-                if ($productArchetype->hasAttribute($attribute)) {
-                    $baseAttribute = $this->productAttributeRepository->findOneBy(array('name' => $attribute));
-                    $productArchetype->addAttribute($baseAttribute);
-                }
+                $attribute ? $baseAttribute = $this->productAttributeRepository->findOneBy(array('name' => $attribute)) : $baseAttribute = null;
+                $productArchetype->addAttribute($baseAttribute);
             }
 
             foreach ($options as $option) {
-                if ($productArchetype->hasOption($option)) {
-                    $baseOption = $this->productOptionRepository->findOneBy(array('name' => $option));
-                    $productArchetype->addOption($baseOption);
-                }
+                $option ? $baseOption = $this->productOptionRepository->findOneBy(array('name' => $option)) : $baseOption = null;
+                $productArchetype->addOption($baseOption);
             }
 
             return $productArchetype;
@@ -92,6 +86,6 @@ class ProductArchetypeWriter extends AbstractDoctrineWriter
      */
     public function getType()
     {
-        return 'product_archetype';
+        return 'import_product_archetype';
     }
 }

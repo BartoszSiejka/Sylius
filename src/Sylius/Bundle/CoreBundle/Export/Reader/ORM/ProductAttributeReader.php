@@ -29,15 +29,18 @@ class ProductAttributeReader extends AbstractDoctrineReader
     
     public function process($attribute)
     {
+        $attributes = array();
         $createdAt = (string) $attribute->getCreatedAt()->format('Y-m-d H:m:s');
         
-        return array(
+        $attributes = array_merge($attributes, array(
             'id'            => $attribute->getId(),
             'name'          => $attribute->getName(),
             'type'          => $attribute->getType(),
             'created_at'    => $createdAt,
             'presentation'  => $attribute->getPresentation(),
-        );
+        ));
+        
+        return $attributes;
     }
     
     public function getQuery()

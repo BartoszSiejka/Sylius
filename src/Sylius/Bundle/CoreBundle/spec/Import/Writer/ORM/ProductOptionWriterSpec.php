@@ -14,7 +14,7 @@ namespace spec\Sylius\Bundle\CoreBundle\Import\Writer\ORM;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use PhpSpec\ObjectBehavior;
-use Sylius\Component\Product\Model\Attribute;
+use Sylius\Component\Product\Model\Option;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\TranslatableEntityRepository;
 
 /**
@@ -46,49 +46,46 @@ class ProductOptionWriterSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Component\ImportExport\Writer\WriterInterface');
     }
 
-    function it_creates_new_attribute_if_it_does_not_exist($productOptionRepository, Attribute $productOption)
+    function it_creates_new_option_if_it_does_not_exist($productOptionRepository, Option $productOption)
     {
         $data = array(
             'id'           => 1,
             'name'         => 'testOption',
             'created_at'   => '2015-02-10 10:02:09',
-            'presentation' => '',
+            'presentation' => 'presentationOptions',
         );
 
-        $productAttributeRepository->findOneBy(array('name' => 'testAttribute'))->willReturn(null);
-        $productAttributeRepository->createNew()->willReturn($productAttribute);
+        $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn(null);
+        $productOptionRepository->createNew()->willReturn($productOption);
 
-        $productAttribute->setName('testAttribute');
-        $productAttribute->setType('text');
-        $productAttribute->setCreatedAt('2015-02-10 10:02:09');
-        $productAttribute->setPresentation('testPresentation');
+        $productOption->setName('testAttribute');
+        $productOption->setCreatedAt('2015-02-10 10:02:09');
+        $productOption->setPresentation('testPresentation');
 
-        $this->process($data)->shouldReturn($productAttribute);
+        $this->process($data);
     }
 
-    function it_updates_attribute_if_it_exists($productAttributeRepository, Attribute $productAttribute)
+    function it_updates_option_if_it_exists($productOptionRepository, Option $productOption)
     {
         $data = array(
-            'id'            => 1,
-            'name'          => 'testAttribute',
-            'type'          => 'text',
-            'created_at'    => '2015-02-10 10:02:09',
-            'presentation'  => 'testPresentation',
+            'id'           => 1,
+            'name'         => 'testOption',
+            'created_at'   => '2015-02-10 10:02:09',
+            'presentation' => 'presentationOptions',
         );
 
-        $productAttributeRepository->findOneBy(array('name' => 'testAttribute'))->willReturn($productAttribute);
-        $productAttributeRepository->createNew()->shouldNotBeCalled();
-        
-        $productAttribute->setName('testAttribute');
-        $productAttribute->setType('text');
-        $productAttribute->setCreatedAt('2015-02-10 10:02:09');
-        $productAttribute->setPresentation('testPresentation');
+        $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn($productOption);
+        $productOptionRepository->createNew()->shouldNotBeCalled();
 
-        $this->process($data)->shouldReturn($productAttribute);
+        $productOption->setName('testAttribute');
+        $productOption->setCreatedAt('2015-02-10 10:02:09');
+        $productOption->setPresentation('testPresentation');
+
+        $this->process($data)->shouldReturn($productOption);
     }
     
     function it_has_type()
     {
-        $this->getType()->shouldReturn('product_attribute');
+        $this->getType()->shouldReturn('product_option');
     }
 }

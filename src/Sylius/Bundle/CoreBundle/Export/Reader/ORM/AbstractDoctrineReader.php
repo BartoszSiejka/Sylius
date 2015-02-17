@@ -58,6 +58,8 @@ abstract class AbstractDoctrineReader implements ReaderInterface
      * @var array
      */
     private $statistics;
+    
+    abstract public function getQuery();
 
     abstract public function process($result);
 
@@ -78,9 +80,13 @@ abstract class AbstractDoctrineReader implements ReaderInterface
 
         for ($i = 0; $i<$this->batchSize; $i++) {
             if (false === $this->results->valid()) {
-                $this->running = false;
-
-                return empty($results) ? null : $results;
+                if (empty($results)) { 
+                    $this->running = false;
+                    
+                    return null;
+                }
+                
+                return $results;
             }
 
             if ($result = $this->results->current()) {
@@ -91,7 +97,6 @@ abstract class AbstractDoctrineReader implements ReaderInterface
             $results[] = $result;
             $this->statistics['row']++;
         }
-
         return $results;
     }
 

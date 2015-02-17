@@ -34,11 +34,11 @@ class ProductAttributeWriter extends AbstractDoctrineWriter
         $productAttributeRepository = $this->productAttributeRepository;
         
         if($productAttribute = $productAttributeRepository->findOneBy(array('name' => $data['name']))){
-            $data['name'] ? $productAttribute->setName($data['name']) : $productAttribute->getName();
-            $data['type'] ? $productAttribute->setType($data['type']) : $productAttribute->getType();
+            $data['name'] ? $productAttribute->setName($data['name']) : null;
+            $data['type'] ? $productAttribute->setType($data['type']) : null;
             $data['created_at'] ? $productAttribute->setCreatedAt(new \DateTime($data['created_at'])) : $productAttribute->getCreatedAt();
-            $data['presentation'] ? $productAttribute->setPresentation($data['presentation']) : $productAttribute->getPresentation();
-
+            $data['presentation'] ? $productAttribute->setPresentation($data['presentation']) : null;
+            
             return $productAttribute;
         }
         

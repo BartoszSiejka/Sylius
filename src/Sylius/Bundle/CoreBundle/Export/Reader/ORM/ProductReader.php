@@ -27,7 +27,7 @@ class ProductReader extends AbstractDoctrineReader
         $this->productRepository = $productRepository;
     }
 
-    protected function getQuery()
+    public function getQuery()
     {
         $query = $this->productRepository->createQueryBuilder('p')
             ->getQuery();

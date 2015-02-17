@@ -15,8 +15,8 @@ use PhpSpec\ObjectBehavior;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 /**
- * @author Bartosz Siejka <bartosz.siejka@lakion.com>
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
+ * @author Bartosz Siejka <bartosz.siejka@lakion.com>
  */
 class ProductOptionReaderSpec extends ObjectBehavior
 {

@@ -53,14 +53,14 @@ class GroupWriterSpec extends ObjectBehavior
             'name' => 'testGroup',
             'roles' => 'admin'
         );
-
+        
         $groupRepository->findOneBy(array('name' => 'testGroup'))->willReturn(null);
         $groupRepository->createNew()->willReturn($group);
-
-        $group->setName('testGroup');
-        $group->addRole('admin');
-
-        $this->process($data)->shouldReturn($group);
+        
+        $this->process($data);
+        
+        $group->setName('testGroup')->shouldBeCalled();
+        $group->addRole('admin')->ShouldBeCalled();
     }
 
     function it_updates_group_if_it_exists($groupRepository, Group $group)
@@ -74,10 +74,10 @@ class GroupWriterSpec extends ObjectBehavior
         $groupRepository->findOneBy(array('name' => 'testGroup'))->willReturn($group);
         $groupRepository->createNew()->shouldNotBeCalled();
         
-        $group->setName('testGroup');
-        $group->addRole('admin');
-
-        $this->process($data)->shouldReturn($group);
+        $this->process($data);
+        
+        $group->setName('testGroup')->shouldBeCalled();
+        $group->addRole('admin')->ShouldBeCalled();
     }
     
     function it_has_type()
