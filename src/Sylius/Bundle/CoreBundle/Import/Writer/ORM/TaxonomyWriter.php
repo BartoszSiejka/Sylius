@@ -43,7 +43,7 @@ class TaxonomyWriter extends AbstractDoctrineWriter
             $root = $taxonRepository->findOneBy(array('name' => $data['root_name']));
             
             $data['taxonomy_name'] ? $taxonomy->setName($data['taxonomy_name']) : null;
-            $data['taxonomy_name'] ? $taxon->setTaxonomy($taxonomy) : null;
+            $data['taxonomy_name'] ? $root->setTaxonomy($taxonomy) : null;
             $data['root_name'] ? $root->setName($data['root_name']) : null;
             $data['root_slug'] ? $root->setSlug($data['root_slug']) : null;
             $data['root_permalink'] ? $root->setPermalink($data['root_permalink']) : null;
@@ -51,29 +51,15 @@ class TaxonomyWriter extends AbstractDoctrineWriter
             $data['root_left_tree'] ? $root->setLeft($data['root_left_tree']) : null;
             $data['root_right_tree'] ? $root->setRight($data['root_right_tree']) : null;
             $taxonomy->setRoot($root);
-                
-            if($taxon = $taxonRepository->findOneBy(array('name' => $data['name'])))
-            {
-                $taxon->getName();
-                $taxon->getSlug();
-                $taxon->getPermalink(); 
-                $taxon->getDescription(); 
-                $taxon->getLeft(); 
-                $taxon->getRight(); 
-                $taxon->getLevel();
-                $taxon->getParent();
-                $taxonomy->addTaxon($taxon);
-                
-                return $taxonomy;
-            }
             
+            $taxon->setTaxonomy($taxonomy);
             $data['name'] ? $taxon->setName($data['name']) : null;
             $data['slug'] ? $taxon->setSlug($data['slug']) : null;
             $data['permalink'] ? $taxon->setPermalink($data['permalink']) : null;
             $data['description'] ? $taxon->setDescription($data['description']) : null;
             $data['left_tree'] ? $taxon->setLeft($data['left_tree']) : null;
             $data['right_tree'] ? $taxon->setRight($data['right_tree']) : null;
-            $data['tree_left'] ? $taxon->setLevel($data['tree_level']) : null;
+            $data['tree_level'] ? $taxon->setLevel($data['tree_level']) : null;
             $data['parent_id'] ? $taxon->setParent($parent) : null;
             $taxonomy->addTaxon($taxon);
             
@@ -84,7 +70,7 @@ class TaxonomyWriter extends AbstractDoctrineWriter
         $root = $taxonRepository->createNew();
         
         $taxonomy->setName($data['taxonomy_name']);
-        $taxon->setTaxonomy($taxonomy);
+        $root->setTaxonomy($taxonomy);
         $data['root_name'] ? $root->setName($data['root_name']) : null;
         $data['root_slug'] ? $root->setSlug($data['root_slug']) : null;
         $data['root_permalink'] ? $root->setPermalink($data['root_permalink']) : null;
@@ -93,6 +79,8 @@ class TaxonomyWriter extends AbstractDoctrineWriter
         $data['root_right_tree'] ? $root->setRight($data['root_right_tree']) : null;
         $taxonomy->setRoot($root);
         
+        
+        $taxon->setTaxonomy($taxonomy);
         $data['name'] ? $taxon->setName($data['name']) : null;
         $data['slug'] ? $taxon->setSlug($data['slug']) : null;
         $data['permalink'] ? $taxon->setPermalink($data['permalink']) : null;

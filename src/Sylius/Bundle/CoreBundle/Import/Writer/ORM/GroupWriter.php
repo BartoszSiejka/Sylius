@@ -38,11 +38,7 @@ class GroupWriter extends AbstractDoctrineWriter
             
             if ($data['roles']) {
                 $roles = explode('~', $data['roles']);
-                $oldRoles = $group->getRoles();
-                
-                foreach ($oldRoles as $oldRole) {
-                    $group->removeRole($oldRole);
-                }
+                $group->setRoles(array());
                 
                 foreach ($roles as $role) {
                     $group->addRole($role);

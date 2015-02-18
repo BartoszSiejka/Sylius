@@ -14,7 +14,7 @@ namespace spec\Sylius\Bundle\CoreBundle\Import\Writer\ORM;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use PhpSpec\ObjectBehavior;
-use Sylius\Component\Product\Model\Option;
+use Sylius\Component\Product\Model\OptionInterface;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\TranslatableEntityRepository;
 
 /**
@@ -46,13 +46,14 @@ class ProductOptionWriterSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Component\ImportExport\Writer\WriterInterface');
     }
 
-    function it_creates_new_option_if_it_does_not_exist($productOptionRepository, Option $productOption)
+    function it_creates_new_option_if_it_does_not_exist($productOptionRepository, OptionInterface $productOption)
     {
-        $data = array(array(
-            'id'           => 1,
-            'name'         => 'testOption',
-            'created_at'   => '2015-02-10 10:02:09',
-            'presentation' => 'presentationOptions',
+        $data = array(
+            array(
+                'id'           => 1,
+                'name'         => 'testOption',
+                'created_at'   => '2015-02-10 10:02:09',
+                'presentation' => 'presentationOptions',
         ));
 
         $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn(null);
@@ -65,13 +66,14 @@ class ProductOptionWriterSpec extends ObjectBehavior
         $this->write($data);
     }
 
-    function it_updates_option_if_it_exists($productOptionRepository, Option $productOption)
+    function it_updates_option_if_it_exists($productOptionRepository, OptionInterface $productOption)
     {
-        $data = array(array(
-            'id'           => 1,
-            'name'         => 'testOption',
-            'created_at'   => '2015-02-10 10:02:09',
-            'presentation' => 'presentationOptions',
+        $data = array(
+            array(
+                'id'           => 1,
+                'name'         => 'testOption',
+                'created_at'   => '2015-02-10 10:02:09',
+                'presentation' => 'presentationOptions',
         ));
 
         $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn($productOption);

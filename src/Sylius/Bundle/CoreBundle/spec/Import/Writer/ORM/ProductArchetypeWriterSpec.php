@@ -14,9 +14,9 @@ namespace spec\Sylius\Bundle\CoreBundle\Import\Writer\ORM;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use PhpSpec\ObjectBehavior;
-use Sylius\Component\Archetype\Model\Archetype;
-use Sylius\Component\Attribute\Model\Attribute;
-use Sylius\Component\Variation\Model\Option;
+use Sylius\Component\Archetype\Model\ArchetypeInterface;
+use Sylius\Component\Attribute\Model\AttributeInterface;
+use Sylius\Component\Variation\Model\OptionInterface;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\TranslatableEntityRepository;
 
 /**
@@ -57,19 +57,20 @@ class ProductArchetypeWriterSpec extends ObjectBehavior
         $productArchetypeRepository, 
         $productAttributeRepository, 
         $productOptionRepository, 
-        Archetype $productArchetype,
-        Archetype $parentProductArchetype,
-        Attribute $productAttribute,
-        Option $productOption
+        ArchetypeInterface $productArchetype,
+        ArchetypeInterface $parentProductArchetype,
+        AttributeInterface $productAttribute,
+        OptionInterface $productOption
     ) {
-        $data = array(array(
-            'id'         => 1,
-            'code'       => 'archetypeCode',
-            'name'       => 'testArchetype',
-            'parent'     => 'testParent',
-            'options'    => 'testOption',
-            'attributes' => 'testAttribute',
-            'created_at'  => '2015-02-10 10:02:09',
+        $data = array(
+            array(
+                'id'         => 1,
+                'code'       => 'archetypeCode',
+                'name'       => 'testArchetype',
+                'parent'     => 'testParent',
+                'options'    => 'testOption',
+                'attributes' => 'testAttribute',
+                'created_at'  => '2015-02-10 10:02:09',
         ));
 
         $productArchetypeRepository->findOneBy(array('code' => 'archetypeCode'))->willReturn(null);
@@ -92,19 +93,20 @@ class ProductArchetypeWriterSpec extends ObjectBehavior
         $productArchetypeRepository, 
         $productAttributeRepository, 
         $productOptionRepository, 
-        Archetype $productArchetype,
-        Archetype $parentProductArchetype,
-        Attribute $productAttribute,
-        Option $productOption
+        ArchetypeInterface $productArchetype,
+        ArchetypeInterface $parentProductArchetype,
+        AttributeInterface $productAttribute,
+        OptionInterface $productOption
     ) {
-        $data = array(array(
-            'id'         => 1,
-            'code'       => 'archetypeCode',
-            'name'       => 'testArchetype',
-            'parent'     => 'testParent',
-            'options'    => 'testOption',
-            'attributes' => 'testAttribute',
-            'created_at'  => '2015-02-10 10:02:09',
+        $data = array(
+            array(
+                'id'         => 1,
+                'code'       => 'archetypeCode',
+                'name'       => 'testArchetype',
+                'parent'     => 'testParent',
+                'options'    => 'testOption',
+                'attributes' => 'testAttribute',
+                'created_at'  => '2015-02-10 10:02:09',
         ));
 
         $productArchetypeRepository->findOneBy(array('code' => 'archetypeCode'))->willReturn($productArchetype);
