@@ -28,8 +28,16 @@ class ProductAttributeWriter extends AbstractDoctrineWriter
         parent::__construct($em);
         $this->productAttributeRepository = $productAttributeRepository;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'product_attribute';
+    }
     
-    public function process($data) 
+    protected function process($data) 
     {
         $productAttributeRepository = $this->productAttributeRepository;
         
@@ -50,13 +58,5 @@ class ProductAttributeWriter extends AbstractDoctrineWriter
         $productAttribute->setPresentation($data['presentation']);
         
         return $productAttribute;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return 'product_attribute';
     }
 }

@@ -30,8 +30,16 @@ class TaxonomyWriter extends AbstractDoctrineWriter
         $this->taxonomyRepository = $taxonomyRepository;
         $this->taxonRepository = $taxonRepository;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'taxonomy';
+    }
     
-    public function process($data) 
+    protected function process($data) 
     {
         $taxonomyRepository = $this->taxonomyRepository;
         $taxonRepository = $this->taxonRepository;
@@ -92,13 +100,5 @@ class TaxonomyWriter extends AbstractDoctrineWriter
         $taxonomy->addTaxon($taxon);
         
         return $taxonomy;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return 'taxonomy';
     }
 }

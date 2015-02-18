@@ -28,8 +28,16 @@ class ProductOptionWriter extends AbstractDoctrineWriter
         parent::__construct($em);
         $this->productOptionRepository = $productOptionRepository;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'product_option';
+    }
     
-    public function process($data) 
+    protected function process($data) 
     {
         $productOptionRepository = $this->productOptionRepository;
         
@@ -48,13 +56,5 @@ class ProductOptionWriter extends AbstractDoctrineWriter
         $productOption->setPresentation($data['presentation']);
         
         return $productOption;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return 'product_option';
     }
 }
