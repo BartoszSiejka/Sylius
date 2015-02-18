@@ -97,6 +97,7 @@ abstract class AbstractDoctrineReader implements ReaderInterface
             $results[] = $result;
             $this->statistics['row']++;
         }
+        
         return $results;
     }
 

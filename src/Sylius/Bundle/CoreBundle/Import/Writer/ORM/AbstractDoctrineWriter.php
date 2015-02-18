@@ -25,7 +25,6 @@ use Sylius\Component\ImportExport\Model\JobInterface;
 abstract class AbstractDoctrineWriter implements WriterInterface
 {
     protected $configuration;
-    private $em;
 
     /**
      * Work logger
@@ -38,6 +37,7 @@ abstract class AbstractDoctrineWriter implements WriterInterface
      * @var int
      */
     protected $resultCode;
+    private $em;
 
     public function __construct(EntityManager $em)
     {
@@ -70,8 +70,6 @@ abstract class AbstractDoctrineWriter implements WriterInterface
         $this->logger = $logger;
     }
 
-    public abstract function process($result);
-
     /**
      * {@inheritdoc}
      */
@@ -88,4 +86,6 @@ abstract class AbstractDoctrineWriter implements WriterInterface
     {
         return $this->resultCode;
     }
+
+    protected abstract function process($result);
 }

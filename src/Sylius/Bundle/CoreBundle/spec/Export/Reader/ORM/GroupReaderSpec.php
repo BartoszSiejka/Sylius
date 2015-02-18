@@ -12,7 +12,10 @@
 namespace spec\Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
 use PhpSpec\ObjectBehavior;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\AbstractQuery;
+use Monolog\Logger;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -20,7 +23,7 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
  */
 class GroupReaderSpec extends ObjectBehavior
 {
-    function let(RepositoryInterface $groupRepository)
+    function let(EntityRepository $groupRepository)
     {
         $this->beConstructedWith($groupRepository);
     }
@@ -43,5 +46,40 @@ class GroupReaderSpec extends ObjectBehavior
     function it_has_type()
     {
         $this->getType()->shouldReturn('group');
+    }
+    
+    function it_exports_groups_to_csv_file(
+        $groupRepository,
+        AbstractQuery $query, 
+        QueryBuilder $queryBuilder,
+        Logger $logger
+    ) {
+        $groupRepository
+            ->createQueryBuilder('g')
+            ->willReturn($queryBuilder)
+        ;
+        
+        $queryBuilder
+            ->getQuery()
+            ->willReturn($query)
+        ;
+        
+        $this->setConfiguration(array('batch_size' => 1), $logger);
+        
+        $array = array(
+            array(
+                'id' => 1,
+                'name' => 'Admin',
+                'roles' => array('Api_admin', 'Other_admin')
+            ),
+            array(
+                'id' => 2,
+                'name' => 'User',
+                'roles' => array('User')
+            )
+        );
+        $query->execute()->willReturn($array);
+        
+        $this->read()->shouldReturnArray();
     }
 }

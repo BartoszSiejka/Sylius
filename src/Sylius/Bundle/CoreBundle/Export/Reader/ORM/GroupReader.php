@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
 use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Export product option reader.
@@ -21,8 +22,9 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 class GroupReader extends AbstractDoctrineReader
 {
     private $groupRepository;
+    private $em;
     
-    public function __construct(RepositoryInterface $groupRepository)
+    public function __construct(EntityRepository $groupRepository)
     {
         $this->groupRepository = $groupRepository;
     }

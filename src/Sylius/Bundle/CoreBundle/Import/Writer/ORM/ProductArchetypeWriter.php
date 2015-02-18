@@ -34,8 +34,16 @@ class ProductArchetypeWriter extends AbstractDoctrineWriter
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productOptionRepository = $productOptionRepository;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'import_product_archetype';
+    }
     
-    public function process($data) 
+    protected function process($data) 
     {
         $productArchetypeRepository = $this->productArchetypeRepository;
         $options = explode("~", $data['options']);
@@ -79,13 +87,5 @@ class ProductArchetypeWriter extends AbstractDoctrineWriter
         }
         
         return $productArchetype;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return 'import_product_archetype';
     }
 }

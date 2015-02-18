@@ -40,7 +40,15 @@ class UserWriter extends AbstractDoctrineWriter
         $this->provinceRepository = $provinceRepository;
     }
 
-    public function process($data)
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'user';
+    }
+
+    protected function process($data)
     {
         $userRepository = $this->userRepository;
 
@@ -121,13 +129,5 @@ class UserWriter extends AbstractDoctrineWriter
         $user->setCreatedAt(new \DateTime($data['created_at']));
         
         return $user;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return 'user';
     }
 }

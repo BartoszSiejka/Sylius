@@ -28,8 +28,16 @@ class GroupWriter extends AbstractDoctrineWriter
         parent::__construct($em);
         $this->groupRepository = $groupRepository;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'import_group';
+    }
     
-    public function process($data) 
+    protected function process($data) 
     {
         $groupRepository = $this->groupRepository;
         
@@ -58,13 +66,5 @@ class GroupWriter extends AbstractDoctrineWriter
         }
         
         return $group;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return 'import_group';
     }
 }
