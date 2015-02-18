@@ -70,14 +70,38 @@ class GroupWriterSpec extends ObjectBehavior
         $data = array(array(
             'id' => 1,
             'name' => 'testGroup',
-            'roles' => 'admin'
+            'roles' => null
         ));
 
         $groupRepository->findOneBy(array('name' => 'testGroup'))->willReturn($group);
-        
         $groupRepository->createNew()->shouldNotBeCalled();
+        
         $group->setName('testGroup')->shouldBeCalled();
+        $group->addRole('admin')->shouldNotBeCalled();
+        $em->persist($group)->shouldBeCalled();
+        $em->flush()->shouldBeCalled();
+        
+        $this->write($data);
+    }
+    
+    function it_updates_roles_if_it_exists($groupRepository, Group $group, EntityManager $em)
+    {
+        $data = array(array(
+            'id' => 1,
+            'name' => 'testGroup',
+            'roles' => 'admin~user~manager'
+        ));
+
+        $groupRepository->findOneBy(array('name' => 'testGroup'))->willReturn($group);
+        $groupRepository->createNew()->shouldNotBeCalled();
+        $group->getRoles()->willReturn(array('admin', 'moderator'));
+        
+        $group->setName('testGroup')->shouldBeCalled();
+        $group->removeRole('admin')->shouldBeCalled();
+        $group->removeRole('moderator')->shouldBeCalled();
         $group->addRole('admin')->shouldBeCalled();
+        $group->addRole('user')->shouldBeCalled();
+        $group->addRole('manager')->shouldBeCalled();
         $em->persist($group)->shouldBeCalled();
         $em->flush()->shouldBeCalled();
         

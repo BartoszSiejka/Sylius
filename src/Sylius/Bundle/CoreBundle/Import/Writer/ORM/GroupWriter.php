@@ -34,16 +34,32 @@ class GroupWriter extends AbstractDoctrineWriter
         $groupRepository = $this->groupRepository;
         
         if($group = $groupRepository->findOneBy(array('name' => $data['name']))){
-            $data['name'] ? $group->setName($data['name']) : $group->getName();
-            $data['roles'] ? $group->addRole($data['roles']) : $group->getRoles();
+            $data['name'] ? $group->setName($data['name']) : null;
+            
+            if ($data['roles']) {
+                $roles = explode('~', $data['roles']);
+                $oldRoles = $group->getRoles();
+                
+                foreach ($oldRoles as $oldRole) {
+                    $group->removeRole($oldRole);
+                }
+                
+                foreach ($roles as $role) {
+                    $group->addRole($role);
+                }
+            }
         
             return $group;
         }
         
         $group = $groupRepository->createNew();
+        $roles = explode('~', $data['roles']);
         
         $group->setName($data['name']);
-        $group->addRole($data['roles']);
+        
+        foreach ($roles as $role) {
+            $group->addRole($role);
+        }
         
         return $group;
     }
