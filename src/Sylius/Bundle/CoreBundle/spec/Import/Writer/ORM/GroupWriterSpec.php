@@ -45,39 +45,43 @@ class GroupWriterSpec extends ObjectBehavior
     {
         $this->shouldImplement('Sylius\Component\ImportExport\Writer\WriterInterface');
     }
-
-    function it_creates_new_group_if_it_does_not_exist($groupRepository, Group $group)
+    
+    function it_creates_new_group_if_it_does_not_exist($groupRepository, Group $group, EntityManager $em)
     {
-        $data = array(
+        $data = array(array(
             'id' => 1,
             'name' => 'testGroup',
             'roles' => 'admin'
-        );
-        
+        ));
+
         $groupRepository->findOneBy(array('name' => 'testGroup'))->willReturn(null);
         $groupRepository->createNew()->willReturn($group);
         
-        $this->process($data);
-        
         $group->setName('testGroup')->shouldBeCalled();
-        $group->addRole('admin')->ShouldBeCalled();
+        $group->addRole('admin')->shouldBeCalled();
+        $em->persist($group)->shouldBeCalled();
+        $em->flush()->shouldBeCalled();
+        
+        $this->write($data);
     }
 
-    function it_updates_group_if_it_exists($groupRepository, Group $group)
+    function it_updates_group_if_it_exists($groupRepository, Group $group, EntityManager $em)
     {
-        $data = array(
+        $data = array(array(
             'id' => 1,
             'name' => 'testGroup',
             'roles' => 'admin'
-        );
+        ));
 
         $groupRepository->findOneBy(array('name' => 'testGroup'))->willReturn($group);
+        
         $groupRepository->createNew()->shouldNotBeCalled();
-        
-        $this->process($data);
-        
         $group->setName('testGroup')->shouldBeCalled();
-        $group->addRole('admin')->ShouldBeCalled();
+        $group->addRole('admin')->shouldBeCalled();
+        $em->persist($group)->shouldBeCalled();
+        $em->flush()->shouldBeCalled();
+        
+        $this->write($data);
     }
     
     function it_has_type()

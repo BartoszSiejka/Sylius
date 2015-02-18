@@ -48,40 +48,40 @@ class ProductOptionWriterSpec extends ObjectBehavior
 
     function it_creates_new_option_if_it_does_not_exist($productOptionRepository, Option $productOption)
     {
-        $data = array(
+        $data = array(array(
             'id'           => 1,
             'name'         => 'testOption',
             'created_at'   => '2015-02-10 10:02:09',
             'presentation' => 'presentationOptions',
-        );
+        ));
 
         $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn(null);
         $productOptionRepository->createNew()->willReturn($productOption);
 
-        $productOption->setName('testAttribute');
-        $productOption->setCreatedAt('2015-02-10 10:02:09');
-        $productOption->setPresentation('testPresentation');
+        $productOption->setName('testOption')->shouldBeCalled();
+        $productOption->setCreatedAt(new \DateTime('2015-02-10 10:02:09'))->shouldBeCalled();
+        $productOption->setPresentation('presentationOptions')->shouldBeCalled();
 
-        $this->process($data);
+        $this->write($data);
     }
 
     function it_updates_option_if_it_exists($productOptionRepository, Option $productOption)
     {
-        $data = array(
+        $data = array(array(
             'id'           => 1,
             'name'         => 'testOption',
             'created_at'   => '2015-02-10 10:02:09',
             'presentation' => 'presentationOptions',
-        );
+        ));
 
         $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn($productOption);
         $productOptionRepository->createNew()->shouldNotBeCalled();
 
-        $productOption->setName('testAttribute');
-        $productOption->setCreatedAt('2015-02-10 10:02:09');
-        $productOption->setPresentation('testPresentation');
+        $productOption->setName('testOption')->shouldBeCalled();
+        $productOption->setCreatedAt(new \DateTime('2015-02-10 10:02:09'))->shouldBeCalled();
+        $productOption->setPresentation('presentationOptions')->shouldBeCalled();
 
-        $this->process($data)->shouldReturn($productOption);
+        $this->write($data);
     }
     
     function it_has_type()

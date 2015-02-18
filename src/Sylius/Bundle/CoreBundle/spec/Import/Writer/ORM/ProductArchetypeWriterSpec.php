@@ -58,10 +58,11 @@ class ProductArchetypeWriterSpec extends ObjectBehavior
         $productAttributeRepository, 
         $productOptionRepository, 
         Archetype $productArchetype,
+        Archetype $parentProductArchetype,
         Attribute $productAttribute,
         Option $productOption
     ) {
-        $data = array(
+        $data = array(array(
             'id'         => 1,
             'code'       => 'archetypeCode',
             'name'       => 'testArchetype',
@@ -69,22 +70,22 @@ class ProductArchetypeWriterSpec extends ObjectBehavior
             'options'    => 'testOption',
             'attributes' => 'testAttribute',
             'created_at'  => '2015-02-10 10:02:09',
-        );
+        ));
 
         $productArchetypeRepository->findOneBy(array('code' => 'archetypeCode'))->willReturn(null);
         $productArchetypeRepository->createNew()->willReturn($productArchetype);
-        $parent = $productArchetypeRepository->findOneBy(array('name' => 'testParent'))->willReturn($productArchetype);
+        $productArchetypeRepository->findOneBy(array('name' => 'testParent'))->willReturn($parentProductArchetype);
+        $productAttributeRepository->findOneBy(array('name' => 'testAttribute'))->willReturn($productAttribute);
+        $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn($productOption);
 
-        $productArchetype->setCode('archetypeCode');
-        $productArchetype->setName('testArchetype');
-        $productArchetype->setParent($parent);
-        $baseAttribute = $productAttributeRepository->findOneBy(array('name' => 'testAttribute'))->willReturn($productAttribute);
-        $productArchetype->addAttribute($baseAttribute);
-        $baseOption = $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn($productOption);
-        $productArchetype->addOption($baseOption);
-        $productArchetype->setCreatedAt('2015-02-10 10:02:09');
+        $productArchetype->setCode('archetypeCode')->shouldBeCalled();
+        $productArchetype->setName('testArchetype')->shouldBeCalled();
+        $productArchetype->setParent($parentProductArchetype)->shouldBeCalled();
+        $productArchetype->addAttribute($productAttribute)->shouldBeCalled();
+        $productArchetype->addOption($productOption)->shouldBeCalled();
+        $productArchetype->setCreatedAt(new \DateTime('2015-02-10 10:02:09'))->shouldBeCalled();
 
-        $this->process($data)->shouldReturn($productArchetype);
+        $this->write($data);
     }
 
     function it_updates_archetype_if_it_exists(
@@ -92,10 +93,11 @@ class ProductArchetypeWriterSpec extends ObjectBehavior
         $productAttributeRepository, 
         $productOptionRepository, 
         Archetype $productArchetype,
+        Archetype $parentProductArchetype,
         Attribute $productAttribute,
         Option $productOption
     ) {
-        $data = array(
+        $data = array(array(
             'id'         => 1,
             'code'       => 'archetypeCode',
             'name'       => 'testArchetype',
@@ -103,27 +105,22 @@ class ProductArchetypeWriterSpec extends ObjectBehavior
             'options'    => 'testOption',
             'attributes' => 'testAttribute',
             'created_at'  => '2015-02-10 10:02:09',
-        );
+        ));
 
         $productArchetypeRepository->findOneBy(array('code' => 'archetypeCode'))->willReturn($productArchetype);
         $productArchetypeRepository->createNew()->shouldNotBeCalled();
-        $parent = $productArchetypeRepository->findOneBy(array('name' => 'testParent'))->willReturn($productArchetype);
+        $productArchetypeRepository->findOneBy(array('name' => 'testParent'))->willReturn($parentProductArchetype);
+        $productAttributeRepository->findOneBy(array('name' => 'testAttribute'))->willReturn($productAttribute);
+        $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn($productOption);
         
-        $productAttribute->setName('test$attribute');
-        $productAttribute->setType('text');
-        $productAttribute->setCreatedAt('2015-02-10 10:02:09');
-        $productAttribute->setPresentation('testPresentation');
-        
-        $productArchetype->setCode('archetypeCode');
-        $productArchetype->setName('testArchetype');
-        $productArchetype->setParent($parent);
-        $baseAttribute = $productAttributeRepository->findOneBy(array('name' => 'testAttribute'))->willReturn($productAttribute);
-        $productArchetype->addAttribute($baseAttribute);
-        $baseOption = $productOptionRepository->findOneBy(array('name' => 'testOption'))->willReturn($productOption);
-        $productArchetype->addOption($baseOption);
-        $productArchetype->setCreatedAt('2015-02-10 10:02:09');
-        
-        $this->process($data)->shouldReturn($productArchetype);
+        $productArchetype->setCode('archetypeCode')->shouldBeCalled();
+        $productArchetype->setName('testArchetype')->shouldBeCalled();
+        $productArchetype->setParent($parentProductArchetype)->shouldBeCalled();
+        $productArchetype->addAttribute($productAttribute)->shouldBeCalled();
+        $productArchetype->addOption($productOption)->shouldBeCalled();
+        $productArchetype->setCreatedAt(new \DateTime('2015-02-10 10:02:09'))->shouldBeCalled();
+
+        $this->write($data);
     }
     
     function it_has_type()
