@@ -16,6 +16,9 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\AbstractQuery;
 use Monolog\Logger;
+use Sylius\Component\Core\Model\GroupInterface;
+use Sylius\Component\ImportExport\Factory\ArrayIteratorFactoryInterface;
+use Iterator;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -23,9 +26,9 @@ use Monolog\Logger;
  */
 class GroupReaderSpec extends ObjectBehavior
 {
-    function let(EntityRepository $groupRepository)
+    function let(EntityRepository $groupRepository, ArrayIteratorFactoryInterface $iteratorFactory)
     {
-        $this->beConstructedWith($groupRepository);
+        $this->beConstructedWith($groupRepository, $iteratorFactory);
     }
 
     function it_is_initializable()
@@ -33,7 +36,7 @@ class GroupReaderSpec extends ObjectBehavior
         $this->shouldHaveType('Sylius\Bundle\CoreBundle\Export\Reader\ORM\GroupReader');
     }
 
-    function it_is_abstract_doctrine_reader_object()
+    function it_extends_abstract_doctrine_reader_object()
     {
         $this->shouldHaveType('Sylius\Bundle\CoreBundle\Export\Reader\ORM\AbstractDoctrineReader');
     }
@@ -52,7 +55,11 @@ class GroupReaderSpec extends ObjectBehavior
         $groupRepository,
         AbstractQuery $query, 
         QueryBuilder $queryBuilder,
-        Logger $logger
+        Logger $logger,
+        GroupInterface $group,
+        GroupInterface $group2,
+        Iterator $arrayIterator,
+        $iteratorFactory
     ) {
         $groupRepository
             ->createQueryBuilder('g')
@@ -65,21 +72,113 @@ class GroupReaderSpec extends ObjectBehavior
         ;
         
         $this->setConfiguration(array('batch_size' => 1), $logger);
+        $group->getId()->willReturn(1);
+        $group->getName()->willReturn('Admin');
+        $group->getRoles()->willReturn(array('Api_admin', 'Other_admin'));
+        $group2->getId()->willReturn(2);
+        $group2->getName()->willReturn('User');
+        $group2->getRoles()->willReturn(array('User'));
         
-        $array = array(
+        $array = array($group, $group2);
+        
+        $returnArray = array(
             array(
                 'id' => 1,
                 'name' => 'Admin',
-                'roles' => array('Api_admin', 'Other_admin')
+                'roles' => 'Api_admin~Other_admin'
+            )
+        );
+        
+        $returnArray2 = array(
+            array(
+                'id' => 2,
+                'name' => 'User',
+                'roles' => 'User'
+            )
+        );
+        
+        $query->execute()->willReturn($array);
+        $iteratorFactory->createIteratorFromArray($array)->willReturn($arrayIterator);
+        
+        $arrayIterator->valid()->willReturn(true);
+        $arrayIterator->current()->willReturn($group);
+        $arrayIterator->next()->shouldBeCalled();
+        $group->getId()->shouldBeCalled();
+        $group->getName()->shouldBeCalled();
+        $group->getRoles()->shouldBeCalled();
+        $this->read()->shouldReturn($returnArray);
+        
+        $arrayIterator->valid()->willReturn(true);
+        $arrayIterator->current()->willReturn($group2);
+        $arrayIterator->next()->shouldBeCalled();
+        $group2->getId()->shouldBeCalled();
+        $group2->getName()->shouldBeCalled();
+        $group2->getRoles()->shouldBeCalled();
+        $this->read()->shouldReturn($returnArray2);
+        
+        $arrayIterator->valid()->willReturn(false);
+        $this->read()->shouldReturn(null);
+    }
+    
+    function it_exports_groups_to_csv_file_if_batch_size_is_greater_than_1(
+        $groupRepository,
+        AbstractQuery $query, 
+        QueryBuilder $queryBuilder,
+        Logger $logger,
+        GroupInterface $group,
+        GroupInterface $group2,
+        Iterator $arrayIterator,
+        $iteratorFactory
+    ) {
+        $groupRepository
+            ->createQueryBuilder('g')
+            ->willReturn($queryBuilder)
+        ;
+        
+        $queryBuilder
+            ->getQuery()
+            ->willReturn($query)
+        ;
+        
+        $this->setConfiguration(array('batch_size' => 2), $logger);
+        $group->getId()->willReturn(1);
+        $group->getName()->willReturn('Admin');
+        $group->getRoles()->willReturn(array('Api_admin', 'Other_admin'));
+        $group2->getId()->willReturn(2);
+        $group2->getName()->willReturn('User');
+        $group2->getRoles()->willReturn(array('User'));
+        
+        $array = array($group, $group2);
+        
+        $returnArray = array(
+            array(
+                'id' => 1,
+                'name' => 'Admin',
+                'roles' => 'Api_admin~Other_admin'
             ),
             array(
                 'id' => 2,
                 'name' => 'User',
-                'roles' => array('User')
+                'roles' => 'User'
             )
         );
-        $query->execute()->willReturn($array);
         
-        $this->read()->shouldReturnArray();
+        $query->execute()->willReturn($array);
+        $iteratorFactory->createIteratorFromArray($array)->willReturn($arrayIterator);
+        
+        $arrayIterator->valid()->willReturn(true, true);
+        $arrayIterator->current()->willReturn($group, $group2);
+        $arrayIterator->next()->shouldBeCalled();
+        $group->getId()->shouldBeCalled();
+        $group->getName()->shouldBeCalled();
+        $group->getRoles()->shouldBeCalled();
+        $arrayIterator->next()->shouldBeCalled();
+        $group2->getId()->shouldBeCalled();
+        $group2->getName()->shouldBeCalled();
+        $group2->getRoles()->shouldBeCalled();
+        $this->read()->shouldReturn($returnArray);
+        
+        $arrayIterator->valid()->willReturn(false);
+        $this->read()->shouldReturn(null);
     }
 }

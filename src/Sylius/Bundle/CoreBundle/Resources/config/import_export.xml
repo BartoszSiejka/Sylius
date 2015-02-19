@@ -44,12 +44,20 @@
         <parameter key="sylius.import.taxonomy_writer.class">Sylius\Bundle\CoreBundle\Import\Writer\ORM\TaxonomyWriter</parameter>
         
         <parameter key="sylius.form.type.writer.product_type.class">Sylius\Bundle\CoreBundle\Form\Type\Import\Writer\ProductWriterType</parameter>
+    
+    <!-- Factory -->
+    
+        <parameter key="sylius.export.factory.iterator.class">Sylius\Component\ImportExport\Factory\ArrayIteratorFactory</parameter>
     </parameters>
 
     <services>
+        <!-- Factory -->
+        <service id="sylius.export.factory.iterator" class="%sylius.export.factory.iterator.class%" />
+        
         <!-- Export reader -->
         <service id="sylius.export.group_reader" class="%sylius.export.group_reader.class%">
             <argument type="service" id="sylius.repository.group" />
+            <argument type="service" id="sylius.export.factory.iterator" />
             <tag name="sylius.export.reader" reader="group_reader" label="Group reader" />
         </service>
         <service id="sylius.export.user_reader" class="%sylius.export.user_reader.class%">

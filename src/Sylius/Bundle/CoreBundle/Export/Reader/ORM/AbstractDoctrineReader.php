@@ -14,6 +14,7 @@ namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 use Monolog\Logger;
 use Sylius\Component\ImportExport\Model\JobInterface;
 use Sylius\Component\ImportExport\Reader\ReaderInterface;
+use Sylius\Component\ImportExport\Factory\ArrayIteratorFactoryInterface;
 
 /**
  * Export reader.
@@ -59,6 +60,16 @@ abstract class AbstractDoctrineReader implements ReaderInterface
      */
     private $statistics;
     
+    /**
+     * @var IteratorFactoryInterface
+     */
+    private $iteratorFactory;
+    
+    public function __construct(ArrayIteratorFactoryInterface $iteratorFactory) 
+    {
+        $this->iteratorFactory = $iteratorFactory;
+    }
+    
     abstract public function getQuery();
 
     abstract public function process($result);
@@ -72,7 +83,7 @@ abstract class AbstractDoctrineReader implements ReaderInterface
 
         if (!$this->running) {
             $this->running = true;
-            $this->results = new \ArrayIterator($this->getQuery()->execute());
+            $this->results = $this->iteratorFactory->createIteratorFromArray($this->getQuery()->execute());
             $this->batchSize = $this->configuration['batch_size'];
             $this->statistics = array();
             $this->statistics['row'] = 0;
@@ -97,7 +108,6 @@ abstract class AbstractDoctrineReader implements ReaderInterface
             $results[] = $result;
             $this->statistics['row']++;
         }
-        
         return $results;
     }
 
