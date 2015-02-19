@@ -29,20 +29,6 @@ class GroupReader extends AbstractDoctrineReader
         $this->groupRepository = $groupRepository;
     }
     
-    public function process($group)
-    {
-        $groupArray = array();
-        $roles = implode("~", $group->getRoles());
-        
-        $groupArray = array_merge($groupArray, array(
-            'id'    => $group->getId(),
-            'name'  => $group->getName(),
-            'roles' => $roles   
-        ));
-        
-        return $groupArray;
-    }
-    
     public function getQuery()
     {
         $query = $this->groupRepository->createQueryBuilder('g')
@@ -57,5 +43,19 @@ class GroupReader extends AbstractDoctrineReader
     public function getType()
     {
         return 'group';
+    }
+    
+    protected function process($group)
+    {
+        $groupArray = array();
+        $roles = implode("~", $group->getRoles());
+        
+        $groupArray = array_merge($groupArray, array(
+            'id'    => $group->getId(),
+            'name'  => $group->getName(),
+            'roles' => $roles   
+        ));
+        
+        return $groupArray;
     }
 }

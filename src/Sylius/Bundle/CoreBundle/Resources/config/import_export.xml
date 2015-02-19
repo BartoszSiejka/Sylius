@@ -46,7 +46,6 @@
         <parameter key="sylius.form.type.writer.product_type.class">Sylius\Bundle\CoreBundle\Form\Type\Import\Writer\ProductWriterType</parameter>
     
     <!-- Factory -->
-    
         <parameter key="sylius.export.factory.iterator.class">Sylius\Component\ImportExport\Factory\ArrayIteratorFactory</parameter>
     </parameters>
 
@@ -82,6 +81,7 @@
         </service>
         <service id="sylius.export.taxonomy_reader" class="%sylius.export.taxonomy_reader.class%">
             <argument type="service" id="sylius.repository.taxonomy" />
+            <argument type="service" id="sylius.export.factory.iterator" />
             <tag name="sylius.export.reader" reader="taxonomy_reader" label="Taxonomy reader" />
         </service>
 

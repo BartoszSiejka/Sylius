@@ -13,7 +13,8 @@ namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
 use Monolog\Logger;
 use Sylius\Component\ImportExport\Model\JobInterface;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Doctrine\ORM\EntityRepository;
+use Sylius\Component\ImportExport\Factory\ArrayIteratorFactoryInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
 
 /**
@@ -59,51 +60,27 @@ class TaxonomyReader extends AbstractDoctrineReader
      * @var array
      */
     private $statistics;
+    
+    /**
+     * @param ArrayIteratorFactoryInterface $iteratorFactory
+     */
+    private $iteratorFactory;
 
-    public function __construct(RepositoryInterface $taxonomyRepository)
+    public function __construct(EntityRepository $taxonomyRepository, ArrayIteratorFactoryInterface $iteratorFactory)
     {
         $this->taxonomyRepository = $taxonomyRepository;
-    }
-    
-    public function process($taxons) {
-        $results = array();
-        
-        foreach ($taxons as $taxon) { 
-            $results[] = array(
-                'taxonomy_id'      => $taxon->getTaxonomy()->getId(),
-                'taxonomy_name'    => $taxon->getTaxonomy(),
-                'root_id'          => $taxon->getTaxonomy()->getRoot()->getId(),
-                'root_name'        => $taxon->getTaxonomy()->getRoot()->getName(),
-                'root_slug'        => $taxon->getTaxonomy()->getRoot()->getSlug(),
-                'root_permalink'   => $taxon->getTaxonomy()->getRoot()->getPermalink(),
-                'root_description' => $taxon->getTaxonomy()->getRoot()->getDescription(),
-                'root_left_tree'   => $taxon->getTaxonomy()->getRoot()->getLeft(),
-                'root_right_tree'  => $taxon->getTaxonomy()->getRoot()->getRight(),
-                'root_tree_level'  => $taxon->getTaxonomy()->getRoot()->getLevel(),
-                'id'               => $taxon->getId(),
-                'name'             => $taxon->getName(),
-                'slug'             => $taxon->getSlug(),
-                'permalink'        => $taxon->getPermalink(),
-                'description'      => $taxon->getDescription(),
-                'left_tree'        => $taxon->getLeft(),
-                'right_tree'       => $taxon->getRight(),
-                'tree_level'       => $taxon->getLevel(),
-                'parent_id'        => $taxon->getParent()->getId(),
-                'parent_name'      => $taxon->getParent()->getName(),
-            );
-        }
-        
-        return $results;
+        $this->iteratorFactory = $iteratorFactory;
     }
 
     public function read()
     {
+        $results = array();
         $taxons = array();
 
         if (!$this->running) {
             $this->running = true;
             $this->results = $this->getQuery()->execute();
-            $this->results = new \ArrayIterator($this->results);
+            $this->results = $this->iteratorFactory->createIteratorFromArray($this->results);
             $this->batchSize = $this->configuration['batch_size'];
             $this->statistics = array();
             $this->statistics['row'] = 0;
@@ -120,20 +97,18 @@ class TaxonomyReader extends AbstractDoctrineReader
                 return $results;
             }
             
-            if ($results = $this->results->current()) {
+            if ($result = $this->results->current()) {
                 $this->results->next();
             }
-
-            $taxons = array_merge($taxons, $this->getChildren($results->getRoot()));
+            
+            $taxons = array_merge($taxons, $this->getChildren($result->getRoot()));
+            $results = $this->process($taxons);
         }
-
-        $taxons = $this->process($taxons);
-        $this->statistics['row']++;
         
-        return $taxons;
+        return $results;
     }
 
-    public function getChildren(TaxonInterface $taxon)
+    private function getChildren(TaxonInterface $taxon)
     {
         $children = $taxon->getChildren()->toArray();
 
@@ -158,5 +133,38 @@ class TaxonomyReader extends AbstractDoctrineReader
     public function getType()
     {
         return 'taxonomy';
+    }
+    
+    protected function process($taxons) {
+        $results = array();
+        
+        foreach ($taxons as $taxon) { 
+            $results[] = array(
+                'taxonomy_id'      => $taxon->getTaxonomy()->getId(),
+                'taxonomy_name'    => $taxon->getTaxonomy()->getName(),
+                'root_id'          => $taxon->getTaxonomy()->getRoot()->getId(),
+                'root_name'        => $taxon->getTaxonomy()->getRoot()->getName(),
+                'root_slug'        => $taxon->getTaxonomy()->getRoot()->getSlug(),
+                'root_permalink'   => $taxon->getTaxonomy()->getRoot()->getPermalink(),
+                'root_description' => $taxon->getTaxonomy()->getRoot()->getDescription(),
+                'root_left_tree'   => $taxon->getTaxonomy()->getRoot()->getLeft(),
+                'root_right_tree'  => $taxon->getTaxonomy()->getRoot()->getRight(),
+                'root_tree_level'  => $taxon->getTaxonomy()->getRoot()->getLevel(),
+                'id'               => $taxon->getId(),
+                'name'             => $taxon->getName(),
+                'slug'             => $taxon->getSlug(),
+                'permalink'        => $taxon->getPermalink(),
+                'description'      => $taxon->getDescription(),
+                'left_tree'        => $taxon->getLeft(),
+                'right_tree'       => $taxon->getRight(),
+                'tree_level'       => $taxon->getLevel(),
+                'parent_id'        => $taxon->getParent()->getId(),
+                'parent_name'      => $taxon->getParent()->getName(),
+            );
+            
+            $this->statistics['row']++;
+        }
+        
+        return $results;
     }
 }

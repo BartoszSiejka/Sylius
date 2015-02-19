@@ -69,10 +69,6 @@ abstract class AbstractDoctrineReader implements ReaderInterface
     {
         $this->iteratorFactory = $iteratorFactory;
     }
-    
-    abstract public function getQuery();
-
-    abstract public function process($result);
 
     /**
      * {@inheritdoc}
@@ -136,4 +132,8 @@ abstract class AbstractDoctrineReader implements ReaderInterface
     {
         return $this->resultCode;
     }
+    
+    abstract public function getQuery();
+
+    abstract protected function process($result);
 }
