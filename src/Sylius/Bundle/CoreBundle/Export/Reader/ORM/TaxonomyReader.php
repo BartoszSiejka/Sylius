@@ -79,8 +79,7 @@ class TaxonomyReader extends AbstractDoctrineReader
 
         if (!$this->running) {
             $this->running = true;
-            $this->results = $this->getQuery()->execute();
-            $this->results = $this->iteratorFactory->createIteratorFromArray($this->results);
+            $this->results = $this->iteratorFactory->createIteratorFromArray($this->getQuery()->execute());
             $this->batchSize = $this->configuration['batch_size'];
             $this->statistics = array();
             $this->statistics['row'] = 0;
@@ -108,17 +107,6 @@ class TaxonomyReader extends AbstractDoctrineReader
         return $results;
     }
 
-    private function getChildren(TaxonInterface $taxon)
-    {
-        $children = $taxon->getChildren()->toArray();
-
-        foreach ($children as $child) {
-            $children = array_merge($children, $this->getChildren($child));
-        }
-
-        return $children;
-    }
-
     public function getQuery()
     {
         $query = $this->taxonomyRepository->createQueryBuilder('t')
@@ -139,17 +127,12 @@ class TaxonomyReader extends AbstractDoctrineReader
         $results = array();
         
         foreach ($taxons as $taxon) { 
+            $taxonomy = $taxon->getTaxonomy();
+            $root = $taxonomy->getRoot();
+            
             $results[] = array(
-                'taxonomy_id'      => $taxon->getTaxonomy()->getId(),
-                'taxonomy_name'    => $taxon->getTaxonomy()->getName(),
-                'root_id'          => $taxon->getTaxonomy()->getRoot()->getId(),
-                'root_name'        => $taxon->getTaxonomy()->getRoot()->getName(),
-                'root_slug'        => $taxon->getTaxonomy()->getRoot()->getSlug(),
-                'root_permalink'   => $taxon->getTaxonomy()->getRoot()->getPermalink(),
-                'root_description' => $taxon->getTaxonomy()->getRoot()->getDescription(),
-                'root_left_tree'   => $taxon->getTaxonomy()->getRoot()->getLeft(),
-                'root_right_tree'  => $taxon->getTaxonomy()->getRoot()->getRight(),
-                'root_tree_level'  => $taxon->getTaxonomy()->getRoot()->getLevel(),
+                'taxonomy_id'      => $taxonomy->getId(),
+                'taxonomy_name'    => $taxonomy->getName(),
                 'id'               => $taxon->getId(),
                 'name'             => $taxon->getName(),
                 'slug'             => $taxon->getSlug(),
@@ -160,11 +143,30 @@ class TaxonomyReader extends AbstractDoctrineReader
                 'tree_level'       => $taxon->getLevel(),
                 'parent_id'        => $taxon->getParent()->getId(),
                 'parent_name'      => $taxon->getParent()->getName(),
+                'root_id'          => $root->getId(),
+                'root_name'        => $root->getName(),
+                'root_slug'        => $root->getSlug(),
+                'root_permalink'   => $root->getPermalink(),
+                'root_description' => $root->getDescription(),
+                'root_left_tree'   => $root->getLeft(),
+                'root_right_tree'  => $root->getRight(),
+                'root_tree_level'  => $root->getLevel(),
             );
             
             $this->statistics['row']++;
         }
         
         return $results;
+    }
+
+    public function getChildren(TaxonInterface $taxon)
+    {
+        $children = $taxon->getChildren()->toArray();
+
+        foreach ($children as $child) {
+            $children = array_merge($children, $this->getChildren($child));
+        }
+
+        return $children;
     }
 }

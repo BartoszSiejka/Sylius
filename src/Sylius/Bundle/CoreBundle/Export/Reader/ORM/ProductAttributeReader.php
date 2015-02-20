@@ -11,7 +11,8 @@
 
 namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Doctrine\ORM\EntityRepository;
+use Sylius\Component\ImportExport\Factory\ArrayIteratorFactoryInterface;
 
 /**
  * Export product attribute reader.
@@ -22,25 +23,10 @@ class ProductAttributeReader extends AbstractDoctrineReader
 {
     private $productAttributeRepository;
     
-    public function __construct(RepositoryInterface $productAttributeRepository)
+    public function __construct(EntityRepository $productAttributeRepository, ArrayIteratorFactoryInterface $iteratorFactory)
     {
+        parent::__construct($iteratorFactory);
         $this->productAttributeRepository = $productAttributeRepository;
-    }
-    
-    public function process($attribute)
-    {
-        $attributes = array();
-        $createdAt = (string) $attribute->getCreatedAt()->format('Y-m-d H:m:s');
-        
-        $attributes = array_merge($attributes, array(
-            'id'            => $attribute->getId(),
-            'name'          => $attribute->getName(),
-            'type'          => $attribute->getType(),
-            'created_at'    => $createdAt,
-            'presentation'  => $attribute->getPresentation(),
-        ));
-        
-        return $attributes;
     }
     
     public function getQuery()
@@ -57,5 +43,21 @@ class ProductAttributeReader extends AbstractDoctrineReader
     public function getType()
     {
         return 'product_attribute';
+    }
+    
+    protected function process($attribute)
+    {
+        $attributes = array();
+        $createdAt = (string) $attribute->getCreatedAt()->format('Y-m-d H:m:s');
+        
+        $attributes = array_merge($attributes, array(
+            'id'            => $attribute->getId(),
+            'name'          => $attribute->getName(),
+            'type'          => $attribute->getType(),
+            'created_at'    => $createdAt,
+            'presentation'  => $attribute->getPresentation(),
+        ));
+        
+        return $attributes;
     }
 }

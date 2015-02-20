@@ -172,7 +172,6 @@ class GroupReaderSpec extends ObjectBehavior
         $group->getId()->shouldBeCalled();
         $group->getName()->shouldBeCalled();
         $group->getRoles()->shouldBeCalled();
-        $arrayIterator->next()->shouldBeCalled();
         $group2->getId()->shouldBeCalled();
         $group2->getName()->shouldBeCalled();
         $group2->getRoles()->shouldBeCalled();

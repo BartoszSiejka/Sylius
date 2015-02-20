@@ -11,7 +11,8 @@
 
 namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Doctrine\ORM\EntityRepository;
+use Sylius\Component\ImportExport\Factory\ArrayIteratorFactoryInterface;
 
 /**
  * Export product option reader.
@@ -22,21 +23,10 @@ class ProductOptionReader extends AbstractDoctrineReader
 {
     private $productOptionRepository;
     
-    public function __construct(RepositoryInterface $productOptionRepository)
+    public function __construct(EntityRepository $productOptionRepository, ArrayIteratorFactoryInterface $iteratorFactory)
     {
+        parent::__construct($iteratorFactory);
         $this->productOptionRepository = $productOptionRepository;
-    }
-    
-    public function process($option)
-    {
-        $createdAt = (string) $option->getCreatedAt()->format('Y-m-d H:m:s');
-        
-        return array(
-            'id'           => $option->getId(),
-            'name'         => $option->getName(),
-            'created_at'   => $createdAt,
-            'presentation' => $option->getPresentation()
-        );
     }
     
     public function getQuery()
@@ -53,5 +43,17 @@ class ProductOptionReader extends AbstractDoctrineReader
     public function getType()
     {
         return 'product_option';
+    }
+    
+    protected function process($option)
+    {
+        $createdAt = (string) $option->getCreatedAt()->format('Y-m-d H:m:s');
+        
+        return array(
+            'id'           => $option->getId(),
+            'name'         => $option->getName(),
+            'created_at'   => $createdAt,
+            'presentation' => $option->getPresentation()
+        );
     }
 }

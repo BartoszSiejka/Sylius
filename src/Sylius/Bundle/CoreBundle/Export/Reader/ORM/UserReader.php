@@ -11,7 +11,8 @@
 
 namespace Sylius\Bundle\CoreBundle\Export\Reader\ORM;
 
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Doctrine\ORM\EntityRepository;
+use Sylius\Component\ImportExport\Factory\ArrayIteratorFactoryInterface;
 
 /**
  * Export user reader.
@@ -22,12 +23,29 @@ class UserReader extends AbstractDoctrineReader
 {
     private $userRepository;
 
-    public function __construct(RepositoryInterface $userRepository)
+    public function __construct(EntityRepository $userRepository, ArrayIteratorFactoryInterface $iteratorFactory)
     {
+        parent::__construct($iteratorFactory);
         $this->userRepository = $userRepository;
     }
 
-    public function process($user)
+    public function getQuery()
+    {
+        $query = $this->userRepository->createQueryBuilder('u')
+            ->getQuery();
+
+        return $query;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'user';
+    }
+
+    protected function process($user)
     {
         $shippingAddress = $user->getShippingAddress();
         $billingAddress = $user->getBillingAddress();
@@ -46,7 +64,7 @@ class UserReader extends AbstractDoctrineReader
             'shipping_address_street'       => $shippingAddress ? $shippingAddress->getStreet() : null,
             'shipping_address_postcode'     => $shippingAddress ? $shippingAddress->getPostcode() : null,
             'shipping_address_phone_number' => $shippingAddress ? $shippingAddress->getPhoneNumber() : null,
-            'billing_address_company'                => $billingAddress ? $billingAddress->getCompany() : null,
+            'billing_address_company'       => $billingAddress ? $billingAddress->getCompany() : null,
             'billing_address_country'       => $billingAddress ? $billingAddress->getCountry() : null,
             'billing_address_province'      => $billingAddress ? $billingAddress->getProvince() : null,
             'billing_address_city'          => $billingAddress ? $billingAddress->getCity() : null,
@@ -57,21 +75,5 @@ class UserReader extends AbstractDoctrineReader
             'currency'                      => $user->getCurrency(),
             'created_at'                    => $createdAt,
         );
-    }
-
-    public function getQuery()
-    {
-        $query = $this->userRepository->createQueryBuilder('u')
-            ->getQuery();
-
-        return $query;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return 'user';
     }
 }
